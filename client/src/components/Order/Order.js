@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './Order.css'
-import { fetchOrders } from '../http/orderAPI'
 
 import { observer } from 'mobx-react-lite'
 import { NavLink } from 'react-router-dom'
@@ -8,13 +7,6 @@ import { NavLink } from 'react-router-dom'
 const Order = observer(({ totalPrice }) => {
 	const [orders, setOrders] = useState([])
 
-	useEffect(() => {
-		const loadOrders = async () => {
-			const fetchedOrders = await fetchOrders()
-			setOrders(fetchedOrders)
-		}
-		loadOrders()
-	}, [])
 	return (
 		<section className='order'>
 			<span className='order-total'>
