@@ -1,0 +1,63 @@
+.filter {
+	height: 100%;
+	padding: 30px 18px;
+	min-width: 286px;
+	background-color: #f5f5f5;
+	-webkit-box-shadow: 0px 5px 7.7px 1px rgba(0, 0, 0, 0.25);
+	box-shadow: 0px 5px 7.7px 1px rgba(0, 0, 0, 0.25);
+	border-radius: 10px;
+}
+
+.filter .input-custom-dark {
+	width: 100%;
+}
+
+.filter-parameter-cells {
+	margin-bottom: 10px;
+}
+
+.filter-parameter-cells:last-child {
+	margin-bottom: 0;
+}
+
+.filter .option {
+	cursor: pointer;
+	-webkit-transition: 0.5s;
+	-o-transition: 0.5s;
+	transition: 0.5s;
+	border-radius: 10px;
+	padding: 10px 20px;
+	color: rgba(45, 45, 45, 0.4);
+	border: 1.5px solid rgba(45, 45, 45, 0.4);
+}
+
+.filter .option:hover {
+	border: 1.5px solid #2d2d2d;
+	color: #2d2d2d;
+}
+
+.filter-parameter {
+	margin: 10px 0;
+}
+
+.filter-parameter:first-child {
+	margin: 0 0 10px 0;
+}
+
+.filter-price {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	gap: 10px;
+}
+
+.filter-price .input-custom-dark {
+	max-width: 124px;
+}
+
+.filter-button {
+	width: 100%;
+}

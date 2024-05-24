@@ -1,0 +1,43 @@
+.carousel {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	width: 100%;
+	max-width: 1200px;
+	margin: auto;
+	overflow: hidden;
+}
+
+.carousel-button {
+	background: none;
+	border: none;
+	font-size: 2rem;
+	cursor: pointer;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #333;
+	z-index: 2;
+}
+
+.carousel-button.prev {
+	left: 0;
+}
+
+.carousel-button.next {
+	right: 0;
+}
+
+.carousel-content {
+	display: flex;
+	transition: transform 0.5s ease;
+	will-change: transform;
+}
+
+.carousel-item {
+	max-width: 226px;
+	flex: 0 0 20%; /* 5 items per view */
+	box-sizing: border-box;
+	padding: 0 10px; /* Optional: add some padding for spacing */
+}

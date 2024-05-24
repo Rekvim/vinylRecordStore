@@ -1,0 +1,51 @@
+.footer {
+	-webkit-box-flex: 0;
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto;
+}
+
+.footer {
+	background-color: #000;
+	color: #f5f5f5;
+}
+
+.footer-content {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	gap: 80px;
+	padding: 40px 0;
+}
+
+.footer-title {
+	padding-bottom: 15px;
+}
+
+.footer-cell {
+	max-width: 278px;
+	padding-bottom: 15px;
+}
+
+.footer-link {
+	color: #f5f5f5;
+}
+
+.footer .nets {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	gap: 10px;
+}
+
+.footer .net:hover .net-path {
+	stroke: rgb(245, 245, 245);
+}
+.small-text {
+	font-size: 14px;
+}
