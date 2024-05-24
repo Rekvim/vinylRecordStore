@@ -25,7 +25,6 @@ const News = observer(() => {
 
 	return (
 		<main className='container'>
-			<div></div>
 			<section className='news'>
 				{products.news.map((news) => (
 					<New
