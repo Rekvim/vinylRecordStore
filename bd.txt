@@ -1,0 +1,25 @@
+
+Drop table baskets ;
+Drop table basket_products ;
+Drop table products;
+Drop table product_infos ;
+Drop table genres ;
+Drop table "orders";
+Drop table "users";
+Drop table "roles" ;
+Drop table authors ;
+Drop table news;
+Drop table new_infos ;
+
+
+select * from roles;
+select * from authors;
+select * from baskets;
+select * from basket_products;
+select * from news;
+select * from new_infos ;
+select * from genres;
+select * from users;
+select * from products;
+select * from product_infos;
+select * from orders
