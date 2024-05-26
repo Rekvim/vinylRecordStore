@@ -168,29 +168,15 @@ const NavBar = observer(() => {
 						</NavLink>
 					</nav>
 				) : (
-					<nav className='header__nav-auth'>
-						<NavLink to='/login' className='menu-user-links'>
-							<svg
-								className='login-icon header-icon'
-								width='25'
-								height='25'
-								viewBox='0 0 25 25'
-								fill='none'
-								xmlns='http://www.w3.org/2000/svg'
-							>
-								<g clipPath='url(#clip0_1_18)'>
-									<path
-										className='icon-background'
-										d='M12.5 0C19.3968 0 25 5.60318 25 12.5C25 19.3968 19.3968 25 12.5 25C5.60318 25 0 19.3968 0 12.5C0 5.60318 5.60318 0 12.5 0ZM12.5 2.77778C9.40443 2.77778 6.94493 5.23728 6.94493 8.33286C6.94493 11.4284 9.40443 13.8879 12.5 13.8879C15.5956 13.8879 18.0551 11.4284 18.0551 8.33286C18.0551 5.23728 15.5956 2.77778 12.5 2.77778ZM12.5 22.1875C16.4551 22.1875 19.7588 19.969 21.4032 16.7188C20.8928 14.2685 18.5293 12.5 15.625 12.5H9.375C6.47073 12.5 4.10722 14.2685 3.59687 16.7188C5.24125 19.969 8.54494 22.1875 12.5 22.1875Z'
-										fill='rgba(45, 45, 45, 0.6)'
-									/>
-								</g>
-								<defs>
-									<clipPath id='clip0_1_18'>
-										<rect width='25' height='25' fill='white' />
-									</clipPath>
-								</defs>
-							</svg>
+					<nav className='header__nav-user-bar'>
+						<NavLink to='/login' className='menu-user-links button-custom'>
+							Войти
+						</NavLink>
+						<NavLink
+							to='/registration'
+							className='menu-user-links button-custom'
+						>
+							Регистрация
 						</NavLink>
 					</nav>
 				)}
