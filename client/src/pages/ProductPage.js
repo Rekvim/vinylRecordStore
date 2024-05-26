@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import {
 	fetchOneProduct,
@@ -11,49 +11,53 @@ import { jwtDecode } from 'jwt-decode'
 import '../css/Main.css'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { Context } from '../index'
 
 const ProductPage = () => {
 	const [product, setProduct] = useState({ info: [] })
 	const { id } = useParams()
-
+	const { users } = useContext(Context)
 	useEffect(() => {
 		fetchOneProduct(id).then((data) => setProduct(data))
 	}, [id])
 
 	const handleAddToBasket = async () => {
-		const token = localStorage.getItem('token')
-		if (token) {
-			try {
-				const decodedToken = jwtDecode(token)
-				const userId = decodedToken.id // предположим, что ID пользователя хранится в поле `id` токена
+		if (users.isAuth) {
+			const token = localStorage.getItem('token')
+			if (token) {
+				try {
+					const decodedToken = jwtDecode(token)
+					const userId = decodedToken.id // предположим, что ID пользователя хранится в поле `id` токена
 
-				if (userId) {
-					const basket = await fetchBasket()
-					const basketProduct = basket.find((p) => p.productId === parseInt(id))
-
-					if (basketProduct) {
-						// Продукт уже в корзине, увеличиваем количество
-						await increaseBasketProductQuantity(
-							basketProduct.basketId,
-							basketProduct.productId
+					if (userId) {
+						const basket = await fetchBasket()
+						const basketProduct = basket.find(
+							(p) => p.productId === parseInt(id)
 						)
-						toast.info('Количество товара увеличено.')
+
+						if (basketProduct) {
+							// Продукт уже в корзине, увеличиваем количество
+							await increaseBasketProductQuantity(
+								basketProduct.basketId,
+								basketProduct.productId
+							)
+							toast.info('Количество товара увеличено.')
+						} else {
+							// Продукта нет в корзине, добавляем
+							await createBasketProduct({ basketId: userId, productId: id })
+							toast.info('Товар добавлен в корзину.')
+						}
 					} else {
-						// Продукта нет в корзине, добавляем
-						await createBasketProduct({ basketId: userId, productId: id })
-						toast.info('Товар добавлен в корзину.')
+						toast.error('ID пользователя не найден в токене')
 					}
-				} else {
-					console.error('ID пользователя не найден в токене')
-					toast.error('ID пользователя не найден в токене')
+				} catch (error) {
+					toast.error('Ошибка при обновлении корзины.')
 				}
-			} catch (error) {
-				console.error('Ошибка при обновлении корзины:', error)
-				toast.error('Ошибка при обновлении корзины.')
+			} else {
+				toast.error('Токен не найден')
 			}
 		} else {
-			console.error('Токен не найден')
-			toast.error('Токен не найден')
+			toast.error('Авторизуйтесь !')
 		}
 	}
 
