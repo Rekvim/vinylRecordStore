@@ -676,13 +676,13 @@ h6 {
 }
 
 .new {
-	padding-bottom: 20px;
+	padding-bottom: 25px;
 	margin: 35px;
 	border-bottom: 1px solid #2d2d2d;
 }
 
 .new:last-child {
-	border: 0;
+	border-bottom: 0px solid #2d2d2d;
 }
 
 .new-info {
@@ -695,8 +695,8 @@ h6 {
 }
 
 .new-button {
-	display: block;
-	text-align: right;
+	position: relative;
+	left: 85%;
 }
 
 .footer {

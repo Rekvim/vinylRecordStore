@@ -46,9 +46,11 @@ class ProductStore {
 	setMaxPrice(maxPrice) {
 		this._maxPrice = maxPrice
 	}
+
 	setNews(news) {
 		this._news = news
 	}
+
 	get products() {
 		return this._products
 	}
@@ -80,8 +82,13 @@ class ProductStore {
 	get maxPrice() {
 		return this._maxPrice
 	}
+
 	get news() {
 		return this._news
+	}
+
+	get limit() {
+		return this._limit
 	}
 }
 

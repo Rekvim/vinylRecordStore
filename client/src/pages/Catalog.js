@@ -14,28 +14,31 @@ const Catalog = observer(() => {
 	}, [products])
 
 	useEffect(() => {
+		fetchGenres().then((data) => products.setGenres(data))
+	}, [])
+
+	useEffect(() => {
 		fetchProductVinyl(
 			products.selectedGenres,
 			products.title,
-			products.page,
-			6,
 			products.minPrice,
-			products.maxPrice
+			products.maxPrice,
+			products.page,
+			products.limit // Используем лимит из состояния
 		).then((data) => {
 			products.setProducts(data.rows)
 			products.setTotalCount(data.count)
 		})
 	}, [
 		products.selectedGenres,
-		products.page,
 		products.title,
 		products.minPrice,
 		products.maxPrice,
-		products,
+		products.page, // Следим за изменениями страницы
 	])
 
 	return (
-		<main className='main'>
+		<main>
 			<div className='catalog-container container'>
 				<Filter />
 				<section className='catalog'>

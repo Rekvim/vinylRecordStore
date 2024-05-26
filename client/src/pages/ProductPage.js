@@ -27,7 +27,7 @@ const ProductPage = () => {
 			if (token) {
 				try {
 					const decodedToken = jwtDecode(token)
-					const userId = decodedToken.id // предположим, что ID пользователя хранится в поле `id` токена
+					const userId = decodedToken.id // предположим, что ID пользователя хранится в поле `id` token
 
 					if (userId) {
 						const basket = await fetchBasket()
@@ -48,13 +48,13 @@ const ProductPage = () => {
 							toast.info('Товар добавлен в корзину.')
 						}
 					} else {
-						toast.error('ID пользователя не найден в токене')
+						toast.error('ID пользователя не найден в token')
 					}
 				} catch (error) {
 					toast.error('Ошибка при обновлении корзины.')
 				}
 			} else {
-				toast.error('Токен не найден')
+				toast.error('token не найден')
 			}
 		} else {
 			toast.error('Авторизуйтесь !')

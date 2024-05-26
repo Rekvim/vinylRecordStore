@@ -82,19 +82,19 @@ export const fetchOrders = async () => {
 export const fetchProductVinyl = async (
 	genreId,
 	name,
-	page,
-	limit,
 	minPrice,
-	maxPrice
+	maxPrice,
+	page,
+	limit
 ) => {
 	const { data } = await $host.get('api/products', {
 		params: {
 			genreId,
 			name,
-			page,
-			limit,
 			minPrice,
 			maxPrice,
+			page,
+			limit,
 		},
 	})
 	return data
