@@ -2,10 +2,6 @@ const sequelize = require('../db')
 const { DataTypes } = require('sequelize')
 
 // Определение моделей
-const Order = sequelize.define('orders', {
-	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-	product: { type: DataTypes.STRING, allowNull: false },
-})
 
 const Role = sequelize.define('roles', {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -19,14 +15,6 @@ const User = sequelize.define('users', {
 	patronymic: { type: DataTypes.STRING },
 	telephone: { type: DataTypes.STRING, allowNull: false },
 	password: { type: DataTypes.STRING, allowNull: false },
-})
-
-const Basket = sequelize.define('baskets', {
-	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-})
-const BasketProduct = sequelize.define('basket_products', {
-	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-	quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 }, // Новое поле для количества товаров в корзине
 })
 const Genre = sequelize.define('genres', {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -50,6 +38,17 @@ const ProductInfo = sequelize.define('product_infos', {
 	title: { type: DataTypes.STRING, allowNull: false },
 	description: { type: DataTypes.STRING, allowNull: false },
 })
+const Basket = sequelize.define('baskets', {
+	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+})
+const BasketProduct = sequelize.define('basket_products', {
+	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+	quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 }, // Новое поле для количества товаров в корзине
+})
+const Order = sequelize.define('orders', {
+	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+	product: { type: DataTypes.STRING, allowNull: false },
+})
 
 const New = sequelize.define('news', {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -70,23 +69,23 @@ User.belongsTo(Role)
 User.hasOne(Basket)
 Basket.belongsTo(User)
 
-Basket.hasMany(BasketProduct)
-BasketProduct.belongsTo(Basket)
-
-BasketProduct.hasMany(Order)
-Order.belongsTo(BasketProduct)
-
-Product.hasOne(BasketProduct)
-BasketProduct.belongsTo(Product)
-
 Genre.hasMany(Product)
 Product.belongsTo(Genre)
 
 Author.hasMany(Product)
 Product.belongsTo(Author)
 
+Product.hasOne(BasketProduct)
+BasketProduct.belongsTo(Product)
+
 Product.hasMany(ProductInfo, { as: 'info' })
 ProductInfo.belongsTo(Product)
+
+Basket.hasMany(BasketProduct)
+BasketProduct.belongsTo(Basket)
+
+BasketProduct.hasMany(Order)
+Order.belongsTo(BasketProduct)
 
 New.hasMany(NewInfo, { as: 'info' })
 NewInfo.belongsTo(New)
@@ -95,15 +94,15 @@ NewInfo.belongsTo(New)
 // New.belongsTo(NewInfo)
 
 module.exports = {
-	New,
-	NewInfo,
-	Order,
 	Role,
 	User,
 	Author,
 	Basket,
 	Genre,
 	Product,
-	BasketProduct,
 	ProductInfo,
+	BasketProduct,
+	Order,
+	New,
+	NewInfo,
 }
