@@ -10,7 +10,7 @@ const Shop = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				// Получаем бестселлеры и новинки
+				// Получаем бестселлеры и новинки ку
 				const bestsellersData = await fetchProductVinyl()
 				const newReleasesData = await fetchProductVinyl()
 
