@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import BasketProduct from '../components/BasketProduct/BasketProduct'
 import Order from '../components/Order/Order'
-import { fetchBasket, fetchOneProduct } from '../http/productAPI'
+import { fetchBasket, fetchOneProduct, createOrder } from '../http/productAPI'
 import '../css/Main.css'
 import { Context } from '../index'
 
@@ -57,6 +57,22 @@ const Basket = () => {
 		}, 0)
 	}
 
+	const handleCreateOrder = async () => {
+		try {
+			const basketId = users.basketId
+			const productsWithBasketProductId = products.map((product) => ({
+				...product,
+				basketProductId: product.id,
+			}))
+			await createOrder({ basketId, products: productsWithBasketProductId })
+			// Очистить корзину после создания заказа
+			setProducts([])
+			users.setCartCount(0)
+		} catch (error) {
+			console.error('Ошибка при создании заказа:', error)
+		}
+	}
+
 	if (isLoading) {
 		return <div className='card container'>Загрузка...</div>
 	}
@@ -85,7 +101,10 @@ const Basket = () => {
 							/>
 						))}
 					</div>
-					<Order totalPrice={getTotalPrice()} />
+					<Order
+						totalPrice={getTotalPrice()}
+						onCreateOrder={handleCreateOrder}
+					/>
 				</div>
 			)}
 		</main>

@@ -34,21 +34,38 @@ class ProductController {
 	async getAll(req, res) {
 		let { name, genreId, page, limit, minPrice, maxPrice } = req.query
 
-		page = page || 1
-		limit = limit || 9
+		page = parseInt(page) || 1
+		limit = parseInt(limit) || 9
 		let offset = page * limit - limit
+
+		// Преобразование значений цены в числа или установление undefined
+		minPrice = minPrice ? parseFloat(minPrice) : undefined
+		maxPrice = maxPrice ? parseFloat(maxPrice) : undefined
+
 		const whereClause = {
 			...(genreId && { genreId }),
 			...(name && { name: { [Op.iLike]: `%${name}%` } }),
-			...(minPrice && { price: { [Op.gte]: minPrice } }),
-			...(maxPrice && { price: { [Op.lte]: maxPrice } }),
 		}
-		const products = await Product.findAndCountAll({
-			where: whereClause,
-			limit,
-			offset,
-		})
-		return res.json(products)
+
+		if (minPrice !== undefined || maxPrice !== undefined) {
+			whereClause.price = {}
+			if (minPrice !== undefined) whereClause.price[Op.gte] = minPrice
+			if (maxPrice !== undefined) whereClause.price[Op.lte] = maxPrice
+		}
+
+		console.log('Where clause:', whereClause) // Debug line
+
+		try {
+			const products = await Product.findAndCountAll({
+				where: whereClause,
+				limit,
+				offset,
+			})
+			return res.json(products)
+		} catch (error) {
+			console.error('Error fetching products:', error)
+			return res.status(500).json({ message: 'Error fetching products' })
+		}
 	}
 
 	async getOne(req, res) {

@@ -4,6 +4,7 @@ import './NavBar.css'
 import '../../css/Main.css'
 import { observer } from 'mobx-react-lite'
 import { NavLink } from 'react-router-dom'
+import SearchBar from '../SearchBar/SearchBar' // Импортируем компонент поиска
 
 const NavBar = observer(() => {
 	const { users } = useContext(Context)
@@ -130,6 +131,7 @@ const NavBar = observer(() => {
 					<NavLink to='news' className='menu-link text'>
 						Новости
 					</NavLink>
+					<SearchBar />
 				</nav>
 				{users.isAuth ? (
 					<nav className='header__nav-user-bar'>

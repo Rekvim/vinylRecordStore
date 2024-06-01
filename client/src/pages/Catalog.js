@@ -11,10 +11,6 @@ const Catalog = observer(() => {
 
 	useEffect(() => {
 		fetchGenres().then((data) => products.setGenres(data))
-	}, [products])
-
-	useEffect(() => {
-		fetchGenres().then((data) => products.setGenres(data))
 	}, [])
 
 	useEffect(() => {
@@ -24,7 +20,7 @@ const Catalog = observer(() => {
 			products.minPrice,
 			products.maxPrice,
 			products.page,
-			products.limit // Используем лимит из состояния
+			products.limit
 		).then((data) => {
 			products.setProducts(data.rows)
 			products.setTotalCount(data.count)
@@ -34,7 +30,7 @@ const Catalog = observer(() => {
 		products.title,
 		products.minPrice,
 		products.maxPrice,
-		products.page, // Следим за изменениями страницы
+		products.page,
 	])
 
 	return (

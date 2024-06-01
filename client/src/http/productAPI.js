@@ -70,8 +70,8 @@ export const fetchCategories = async () => {
 	const { data } = await $host.get('/api/categories')
 	return data
 }
-export const createOrder = async (basketProductId, product) => {
-	const { data } = await $host.post('api/orders', { basketProductId, product })
+export const createOrder = async (orderData) => {
+	const { data } = await $host.post('api/orders', orderData)
 	return data
 }
 
