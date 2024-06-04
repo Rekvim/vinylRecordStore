@@ -6,13 +6,16 @@ import { observer } from 'mobx-react-lite'
 import { fetchGenres, fetchProductVinyl } from '../http/productAPI'
 import Pagination from '../components/Pagination/Pagination'
 
+// Компонент Catalog обернут в observer для отслеживания изменений в MobX состоянии
 const Catalog = observer(() => {
-	const { products } = useContext(Context)
+	const { products } = useContext(Context) // Получение контекста с продуктами
 
+	// Эффект для получения жанров при загрузке компонента
 	useEffect(() => {
 		fetchGenres().then((data) => products.setGenres(data))
-	}, [])
+	}, [products])
 
+	// Эффект для получения продуктов при изменении фильтров и параметров пагинации
 	useEffect(() => {
 		fetchProductVinyl(
 			products.selectedGenres,
@@ -26,11 +29,12 @@ const Catalog = observer(() => {
 			products.setTotalCount(data.count)
 		})
 	}, [
-		products.selectedGenres,
-		products.title,
-		products.minPrice,
-		products.maxPrice,
-		products.page,
+		products.selectedGenres, // Зависимость от выбранных жанров
+		products.title, // Зависимость от заголовка (поискового запроса)
+		products.minPrice, // Зависимость от минимальной цены
+		products.maxPrice, // Зависимость от максимальной цены
+		products.page, // Зависимость от текущей страницы
+		products, // Добавлено products для обеспечения зависимости
 	])
 
 	return (

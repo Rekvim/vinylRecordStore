@@ -9,19 +9,13 @@ import { observer } from 'mobx-react-lite'
 const News = observer(() => {
 	const { products } = useContext(Context)
 
+	// Загрузка новостей при монтировании компонента или изменении страницы
 	useEffect(() => {
 		fetchNews(products.page, 6).then((data) => {
 			products.setNews(data.rows)
 			products.setTotalCount(data.count)
 		})
-	}, [products])
-
-	useEffect(() => {
-		fetchNews(products.page, 6).then((data) => {
-			products.setNews(data.rows)
-			products.setTotalCount(data.count)
-		})
-	}, [products.page, products]) // Remove products from dependencies
+	}, [products, products.page]) // products не используется внутри, поэтому его можно убрать из зависимостей
 
 	return (
 		<main className='container'>

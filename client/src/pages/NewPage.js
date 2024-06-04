@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-
 import { useParams } from 'react-router-dom'
 import { fetchOneNews } from '../http/newAPI'
 import '../css/Main.css'
@@ -7,9 +6,12 @@ import '../css/Main.css'
 const NewPage = () => {
 	const [news, setNew] = useState({ info: [] })
 	const { id } = useParams()
+
+	// Загрузка одной новости по id при монтировании компонента или изменении id
 	useEffect(() => {
 		fetchOneNews(id).then((data) => setNew(data))
 	}, [id])
+
 	return (
 		<main class='main container'>
 			{news.info.map((info) => (

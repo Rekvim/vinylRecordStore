@@ -1,11 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Context } from '../../index'
-import {
-	createProducts,
-	fetchGenres,
-	fetchAuthors,
-	fetchCategories,
-} from '../../http/productAPI'
+import { createProducts, fetchGenres } from '../../http/productAPI'
 import { observer } from 'mobx-react-lite'
 
 const CreateProducts = observer(({ isOpen, onClose }) => {
@@ -16,9 +11,7 @@ const CreateProducts = observer(({ isOpen, onClose }) => {
 	const [info, setInfo] = useState([])
 
 	useEffect(() => {
-		fetchAuthors().then((data) => products.setAuthors(data))
 		fetchGenres().then((data) => products.setGenres(data))
-		fetchCategories().then((data) => products.setCategories(data))
 	}, [products])
 
 	const addInfo = () => {
@@ -32,24 +25,15 @@ const CreateProducts = observer(({ isOpen, onClose }) => {
 	}
 
 	const addDevice = async () => {
-		if (
-			!name ||
-			!price ||
-			!imageUrl ||
-			!products.selectedAuthors ||
-			!products.selectedGenres ||
-			!products.selectedCategories
-		) {
+		if (!name || !price || !imageUrl || !products.selectedGenres) {
 			alert('Please fill all required fields')
 			return
 		}
 
 		const productData = {
 			name: name,
-			authorId: products.selectedAuthors,
 			price: price,
 			genreId: products.selectedGenres,
-			categoryId: products.selectedCategories,
 			image_url: imageUrl,
 			info: JSON.stringify(
 				info.map((i) => ({ title: i.title, description: i.description }))
@@ -87,25 +71,6 @@ const CreateProducts = observer(({ isOpen, onClose }) => {
 					<select
 						className='select-custom'
 						defaultValue=''
-						onChange={(e) => products.setSelectedAuthors(e.target.value)}
-					>
-						<option value='' disabled>
-							Выберите автора
-						</option>
-						{products.authors.length > 0 &&
-							products.authors.map((author) => (
-								<option
-									className='option-custom'
-									value={author.id}
-									key={author.id}
-								>
-									{author.name}
-								</option>
-							))}
-					</select>
-					<select
-						className='select-custom'
-						defaultValue=''
 						onChange={(e) => products.setSelectedGenres(e.target.value)}
 					>
 						<option value='' disabled>
@@ -122,25 +87,7 @@ const CreateProducts = observer(({ isOpen, onClose }) => {
 								</option>
 							))}
 					</select>
-					<select
-						className='select-custom'
-						defaultValue=''
-						onChange={(e) => products.setSelectedCategories(e.target.value)}
-					>
-						<option value='' disabled>
-							Выберите категорию
-						</option>
-						{products.categories.length > 0 &&
-							products.categories.map((category) => (
-								<option
-									className='option-custom'
-									value={category.id}
-									key={category.id}
-								>
-									{category.name}
-								</option>
-							))}
-					</select>
+
 					<input
 						value={imageUrl}
 						onChange={(e) => setImageUrl(e.target.value)}

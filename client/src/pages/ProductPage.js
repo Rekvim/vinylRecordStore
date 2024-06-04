@@ -15,49 +15,56 @@ import { Context } from '../index'
 
 const ProductPage = () => {
 	const [product, setProduct] = useState({ info: [] })
+	const [isAddingToBasket, setIsAddingToBasket] = useState(false) // Состояние для блокировки кнопки
 	const { id } = useParams()
 	const { users } = useContext(Context)
+
 	useEffect(() => {
 		fetchOneProduct(id).then((data) => setProduct(data))
 	}, [id])
 
 	const handleAddToBasket = async () => {
-		if (users.isAuth) {
-			const token = localStorage.getItem('token')
-			if (token) {
-				try {
-					const decodedToken = jwtDecode(token)
-					const userId = decodedToken.id // предположим, что ID пользователя хранится в поле `id` token
+		if (!isAddingToBasket) {
+			// Проверяем, не добавляется ли товар уже
+			setIsAddingToBasket(true) // Блокируем кнопку
 
-					if (userId) {
-						const basket = await fetchBasket()
-						const basketProduct = basket.find(
-							(p) => p.productId === parseInt(id)
-						)
+			if (users.isAuth) {
+				const token = localStorage.getItem('token')
+				if (token) {
+					try {
+						const decodedToken = jwtDecode(token)
+						const userId = decodedToken.id
 
-						if (basketProduct) {
-							// Продукт уже в корзине, увеличиваем количество
-							await increaseBasketProductQuantity(
-								basketProduct.basketId,
-								basketProduct.productId
+						if (userId) {
+							const basket = await fetchBasket()
+							const basketProduct = basket.find(
+								(p) => p.productId === parseInt(id)
 							)
-							toast.info('Количество товара увеличено.')
+
+							if (basketProduct) {
+								await increaseBasketProductQuantity(
+									basketProduct.basketId,
+									basketProduct.productId
+								)
+								toast.info('Количество товара увеличено.')
+							} else {
+								await createBasketProduct({ basketId: userId, productId: id })
+								toast.info('Товар добавлен в корзину.')
+							}
 						} else {
-							// Продукта нет в корзине, добавляем
-							await createBasketProduct({ basketId: userId, productId: id })
-							toast.info('Товар добавлен в корзину.')
+							toast.error('ID пользователя не найден в token')
 						}
-					} else {
-						toast.error('ID пользователя не найден в token')
+					} catch (error) {
+						toast.error('Ошибка при обновлении корзины.')
 					}
-				} catch (error) {
-					toast.error('Ошибка при обновлении корзины.')
+				} else {
+					toast.error('token не найден')
 				}
 			} else {
-				toast.error('token не найден')
+				toast.error('Авторизуйтесь!')
 			}
-		} else {
-			toast.error('Авторизуйтесь !')
+
+			setIsAddingToBasket(false) // Разблокируем кнопку после выполнения операции
 		}
 	}
 
@@ -80,8 +87,9 @@ const ProductPage = () => {
 					<button
 						onClick={handleAddToBasket}
 						className='productPage-button button-custom'
+						disabled={isAddingToBasket} // Блокируем кнопку при добавлении в корзину
 					>
-						В корзину
+						{isAddingToBasket ? 'Добавляется...' : 'В корзину'}
 					</button>
 					<b className='productPage-price medium-title'>{product.price} руб.</b>
 				</div>

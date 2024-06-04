@@ -6,30 +6,42 @@ import '../css/Main.css'
 import { Context } from '../index'
 
 const Basket = () => {
+	// Получение доступа к контексту
 	const { users } = useContext(Context)
-	const [products, setProducts] = useState([])
-	const [productDetails, setProductDetails] = useState({})
-	const [isLoading, setIsLoading] = useState(true)
 
+	// Состояния компонента
+	const [products, setProducts] = useState([]) // Продукты в корзине
+	const [productDetails, setProductDetails] = useState({}) // Детали о продуктах
+	const [isLoading, setIsLoading] = useState(true) // Состояние загрузки
+
+	// Загрузка продуктов и их деталей из корзины при монтировании компонента
 	useEffect(() => {
 		const loadBasket = async () => {
-			const basketProducts = await fetchBasket()
-			setProducts(basketProducts)
-			users.setCartCount(basketProducts.length)
+			try {
+				// Получение продуктов из корзины
+				const basketProducts = await fetchBasket()
+				setProducts(basketProducts)
+				users.setCartCount(basketProducts.length)
 
-			const details = await Promise.all(
-				basketProducts.map((product) => fetchOneProduct(product.productId))
-			)
-			const detailsMap = {}
-			details.forEach((detail) => {
-				detailsMap[detail.id] = detail
-			})
-			setProductDetails(detailsMap)
-			setIsLoading(false)
+				// Получение деталей о продуктах
+				const details = await Promise.all(
+					basketProducts.map((product) => fetchOneProduct(product.productId))
+				)
+				// Преобразование массива деталей в объект для удобства доступа по id продукта
+				const detailsMap = {}
+				details.forEach((detail) => {
+					detailsMap[detail.id] = detail
+				})
+				setProductDetails(detailsMap)
+				setIsLoading(false)
+			} catch (error) {
+				console.error('Ошибка при загрузке продуктов:', error)
+			}
 		}
 		loadBasket()
 	}, [users])
 
+	// Обработчик удаления продукта из корзины
 	const handleRemoveProduct = (productIdToRemove) => {
 		setProducts(
 			products.filter((product) => product.productId !== productIdToRemove)
@@ -40,6 +52,7 @@ const Basket = () => {
 		setProductDetails(newDetails)
 	}
 
+	// Обработчик обновления информации о продукте в корзине
 	const handleUpdateProduct = (updatedProduct) => {
 		setProducts(
 			products.map((product) =>
@@ -50,6 +63,7 @@ const Basket = () => {
 		)
 	}
 
+	// Получение общей стоимости продуктов в корзине
 	const getTotalPrice = () => {
 		return products.reduce((total, product) => {
 			const details = productDetails[product.productId]
@@ -57,15 +71,19 @@ const Basket = () => {
 		}, 0)
 	}
 
+	// Обработчик создания заказа
 	const handleCreateOrder = async () => {
 		try {
+			// Получение id корзины пользователя
 			const basketId = users.basketId
+			// Добавление id корзины к каждому продукту
 			const productsWithBasketProductId = products.map((product) => ({
 				...product,
 				basketProductId: product.id,
 			}))
+			// Создание заказа на сервере
 			await createOrder({ basketId, products: productsWithBasketProductId })
-			// Очистить корзину после создания заказа
+			// Очистка корзины после создания заказа
 			setProducts([])
 			users.setCartCount(0)
 		} catch (error) {

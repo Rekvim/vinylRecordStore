@@ -2,6 +2,8 @@ import { makeAutoObservable } from 'mobx'
 
 class ProductStore {
 	constructor() {
+		this.allProducts = []
+		this.filteredProducts = []
 		this._products = []
 		this._genres = []
 		this._news = []
@@ -14,9 +16,15 @@ class ProductStore {
 		this._maxPrice = null
 		makeAutoObservable(this)
 	}
+	setAllProducts(products) {
+		this.allProducts = products
+	}
 
 	setProducts(products) {
 		this._products = products
+	}
+	setFilteredProducts(products) {
+		this.filteredProducts = products
 	}
 
 	setGenres(genres) {

@@ -3,29 +3,55 @@ import { Context } from '../../index'
 import './SearchBar.css'
 import { NavLink } from 'react-router-dom'
 import useDebounce from './useDebounce'
+import { fetchProductVinyl } from '../../http/productAPI'
 
 const SearchBar = () => {
-	const { products } = useContext(Context)
-	const [searchTerm, setSearchTerm] = useState('')
-	const [filteredProducts, setFilteredProducts] = useState([])
-	const debouncedSearchTerm = useDebounce(searchTerm, 300)
-	console.log(products.products.length)
+	const { products } = useContext(Context) // Получаем контекст с продуктами
+	const [title, setTitle] = useState('') // Состояние для ввода текста поиска
+	const [localProducts, setLocalProducts] = useState([]) // Локальное состояние для продуктов, отображаемых в результатах поиска
+	const debouncedSearchTerm = useDebounce(title, 300) // Дебаунс (задержка) для текста поиска на 300 мс
+
+	// Обновляем title в products, когда изменяется debouncedSearchTerm
 	useEffect(() => {
 		if (debouncedSearchTerm) {
-			const filtered = products.products.filter((product) =>
-				product.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
-			)
-			console.log('Filtered products:', filtered)
-			setFilteredProducts(filtered)
-		} else {
-			setFilteredProducts([])
+			products.setTitle(debouncedSearchTerm)
 		}
-	}, [debouncedSearchTerm, products.products])
+	}, [debouncedSearchTerm, products])
 
+	// Эффект для выполнения запроса на сервер при изменении debouncedSearchTerm или других зависимостей
+	useEffect(() => {
+		if (debouncedSearchTerm) {
+			fetchProductVinyl(
+				products.selectedGenres,
+				debouncedSearchTerm,
+				products.minPrice,
+				products.maxPrice,
+				products.page,
+				products.limit
+			).then((data) => {
+				setLocalProducts(data.rows) // Обновление локального состояния продуктами, полученными с сервера
+			})
+		} else {
+			setLocalProducts([]) // Очистка локального состояния, если строка поиска пустая
+		}
+	}, [
+		products.selectedGenres,
+		products.minPrice,
+		products.maxPrice,
+		products.page,
+		debouncedSearchTerm,
+		products.limit,
+	])
+
+	// Обработчик для применения фильтра
 	const handleFilter = () => {
 		products.setTitle(debouncedSearchTerm)
 	}
 
+	// Обработчик для изменения состояния title при вводе текста
+	const handleTitleChange = (e) => {
+		setTitle(e.target.value)
+	}
 	return (
 		<div className='search-bar'>
 			<div className='search-input'>
@@ -66,31 +92,35 @@ const SearchBar = () => {
 				<input
 					type='text'
 					placeholder='Поиск...'
-					value={searchTerm}
-					onChange={(e) => setSearchTerm(e.target.value)}
+					value={title}
+					onChange={handleTitleChange}
 					className='input-custom-dark'
 				/>
 			</div>
 
-			{filteredProducts.length > 0 && (
+			{localProducts.length > 0 && (
 				<div className='search-results'>
-					{filteredProducts.map((product) => (
-						<NavLink
-							to={'/product/' + product.id}
-							className='search-result-item'
-							key={product.id}
-						>
-							<img
-								src={product.image_url}
-								alt={product.name}
-								className='search-result-image'
-							/>
-							<div className='search-result-details'>
-								<p className='search-result-name'>{product.name}</p>
-								<p className='search-result-price'>{product.price} руб.</p>
-							</div>
-						</NavLink>
-					))}
+					{localProducts.map(
+						(
+							product // Используем локальное состояние
+						) => (
+							<NavLink
+								to={'/product/' + product.id}
+								className='search-result-item'
+								key={product.id}
+							>
+								<img
+									src={product.image_url}
+									alt={product.name}
+									className='search-result-image'
+								/>
+								<div className='search-result-details'>
+									<p className='search-result-name'>{product.name}</p>
+									<p className='search-result-price'>{product.price} руб.</p>
+								</div>
+							</NavLink>
+						)
+					)}
 				</div>
 			)}
 		</div>

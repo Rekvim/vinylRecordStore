@@ -3,43 +3,48 @@ import './Filter.css'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../../index'
 
+// Компонент FilterCatalog обернут в observer для отслеживания изменений в MobX состоянии
 const FilterCatalog = observer(() => {
-	const { products } = useContext(Context)
-	const [selectedGenre, setSelectedGenre] = useState(products.selectedGenres)
-	const [minPrice, setMinPrice] = useState(products.minPrice)
-	const [maxPrice, setMaxPrice] = useState(products.maxPrice)
-	const [title, setTitle] = useState(products.title)
+	const { products } = useContext(Context) // Получение контекста с продуктами
+	const [selectedGenre, setSelectedGenre] = useState(products.selectedGenres) // Локальное состояние для выбранного жанра
+	const [minPrice, setMinPrice] = useState(products.minPrice) // Локальное состояние для минимальной цены
+	const [maxPrice, setMaxPrice] = useState(products.maxPrice) // Локальное состояние для максимальной цены
+	const [title, setTitle] = useState(products.title) // Локальное состояние для заголовка
 
+	// Обработчик нажатия кнопки "Поиск"
 	const handleFilter = () => {
-		products.setMinPrice(minPrice)
-		products.setMaxPrice(maxPrice)
-		products.setSelectedGenres(selectedGenre)
-		products.setTitle(title)
+		products.setMinPrice(minPrice) // Установка минимальной цены в состояние
+		products.setMaxPrice(maxPrice) // Установка максимальной цены в состояние
+		products.setSelectedGenres(selectedGenre) // Установка выбранного жанра в состояние
+		products.setTitle(title) // Установка заголовка в состояние
 	}
 
+	// Обработчик выбора жанра
 	const handleSelectGenre = (event) => {
 		const selectedOption = event.target.value
-		setSelectedGenre(selectedOption)
+		setSelectedGenre(selectedOption) // Обновление локального состояния выбранного жанра
 	}
 
+	// Обработчик изменения заголовка (поискового запроса)
 	const handleTitleChange = (e) => {
-		setTitle(e.target.value)
+		setTitle(e.target.value) // Обновление локального состояния заголовка
 	}
 
+	// Обработчик изменения цены
 	const handlePriceChange = (setter) => (event) => {
 		const value = event.target.value
 		if (value === '' || /^[0-9\b]+$/.test(value)) {
-			setter(value)
+			setter(value) // Обновление локального состояния цены, если значение пустое или является числом
 		}
 	}
 
+	// Обработчик для предотвращения ввода некорректных символов в поле цены
 	const handleKeyPress = (event) => {
 		const charCode = event.charCode
 		if (charCode !== 46 && (charCode < 48 || charCode > 57)) {
-			event.preventDefault()
+			event.preventDefault() // Предотвращение ввода символов, кроме цифр и точки
 		}
 	}
-
 	return (
 		<section className='filter'>
 			<ul className='filter-parameters'>

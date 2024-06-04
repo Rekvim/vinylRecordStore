@@ -4,20 +4,22 @@ import { fetchProductVinyl } from '../http/productAPI'
 import '../css/Main.css'
 
 const Shop = () => {
+	// Локальные состояния для хранения данных о лучших продажах и новых поступлениях
 	const [bestsellers, setBestsellers] = useState([])
 	const [newReleases, setNewReleases] = useState([])
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				// Получаем бестселлеры и новинки ку
+				// Получаем данные о бестселлерах и новых поступлениях
 				const bestsellersData = await fetchProductVinyl()
 				const newReleasesData = await fetchProductVinyl()
 
-				// Проверка данных и вывод в консоль для отладки
+				// Выводим данные в консоль для отладки
 				console.log('Bestsellers data:', bestsellersData)
 				console.log('New releases data:', newReleasesData)
 
+				// Проверяем полученные данные и устанавливаем их в локальное состояние
 				if (bestsellersData && Array.isArray(bestsellersData.rows)) {
 					setBestsellers(bestsellersData.rows)
 				} else {
