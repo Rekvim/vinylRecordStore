@@ -38,7 +38,6 @@ const Swiper = ({ items, itemsPerPage }) => {
 					// Передача свойств элемента в компонент
 					<div className='carousel-item' key={index}>
 						<Product {...item} />
-						Product
 					</div>
 				)
 			)

@@ -1,31 +1,38 @@
-const { Order, BasketProduct } = require('../models/models')
+const { Order } = require('../models/models')
 
 class OrderController {
 	async create(req, res) {
 		try {
-			const { basketId, products } = req.body
+			const { userId, products, address } = req.body
 
-			if (!products || !products.length) {
-				return res.status(400).json({ message: 'Товары не найдены в корзине' })
+			if (!address || Object.keys(address).length === 0) {
+				return res.status(400).json({ message: 'Адрес не указан' })
+			}
+
+			if (!Array.isArray(products) || products.length === 0) {
+				return res.status(400).json({ message: 'Продуктов нет' })
 			}
 
 			const orders = await Promise.all(
-				products.map(async (product) => {
-					const order = await Order.create({
-						product: product.product,
-						basketProductId: product.basketProductId,
+				products.map((product) => {
+					const { basketProductId, quantity, price } = product
+					return Order.create({
+						basketProductId,
+						userId,
+						quantity,
+						price,
+						address,
 					})
-					return order
 				})
 			)
 
-			res.json(orders)
+			res.status(201).json(orders)
 		} catch (error) {
-			console.error('Ошибка при создании заказа:', error) // логирование ошибки
-			res.status(500).json({ message: 'Ошибка сервера' })
+			res.status(500).json({ error: error.message })
 		}
 	}
-	async get(req, res) {
+
+	async getAll(req, res) {
 		try {
 			const orders = await Order.findAll()
 			return res.json(orders)

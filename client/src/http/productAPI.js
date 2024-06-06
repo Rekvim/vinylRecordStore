@@ -14,7 +14,14 @@ export const createProducts = async (product) => {
 	const { data } = await $authHost.post('/api/products', product)
 	return data
 }
-
+export const createOrders = async (order) => {
+	const { data } = await $authHost.post('/api/orders', order)
+	return data
+}
+export const deleteProduct = async (id) => {
+	const { data } = await $authHost.delete(`api/product/${id}`)
+	return data
+}
 export const createBasketProduct = async (basketProduct) => {
 	try {
 		const response = await $host.post('/api/basketProducts', basketProduct)

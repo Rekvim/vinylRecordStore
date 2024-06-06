@@ -1,33 +1,34 @@
 import React, { useEffect, useState, useContext } from 'react'
 import BasketProduct from '../components/BasketProduct/BasketProduct'
 import Order from '../components/Order/Order'
-import { fetchBasket, fetchOneProduct, createOrder } from '../http/productAPI'
+import {
+	fetchBasket,
+	fetchOneProduct,
+	createOrders,
+	deleteProduct,
+	removeBasketProduct,
+} from '../http/productAPI' // import deleteProduct
 import '../css/Main.css'
 import { Context } from '../index'
+import { jwtDecode } from 'jwt-decode'
 
 const Basket = () => {
-	// Получение доступа к контексту
 	const { users } = useContext(Context)
 
-	// Состояния компонента
-	const [products, setProducts] = useState([]) // Продукты в корзине
-	const [productDetails, setProductDetails] = useState({}) // Детали о продуктах
-	const [isLoading, setIsLoading] = useState(true) // Состояние загрузки
+	const [products, setProducts] = useState([])
+	const [productDetails, setProductDetails] = useState({})
+	const [isLoading, setIsLoading] = useState(true)
 
-	// Загрузка продуктов и их деталей из корзины при монтировании компонента
 	useEffect(() => {
 		const loadBasket = async () => {
 			try {
-				// Получение продуктов из корзины
 				const basketProducts = await fetchBasket()
 				setProducts(basketProducts)
 				users.setCartCount(basketProducts.length)
 
-				// Получение деталей о продуктах
 				const details = await Promise.all(
 					basketProducts.map((product) => fetchOneProduct(product.productId))
 				)
-				// Преобразование массива деталей в объект для удобства доступа по id продукта
 				const detailsMap = {}
 				details.forEach((detail) => {
 					detailsMap[detail.id] = detail
@@ -41,18 +42,21 @@ const Basket = () => {
 		loadBasket()
 	}, [users])
 
-	// Обработчик удаления продукта из корзины
-	const handleRemoveProduct = (productIdToRemove) => {
-		setProducts(
-			products.filter((product) => product.productId !== productIdToRemove)
-		)
-		users.setCartCount(users.cartCount - 1)
-		const newDetails = { ...productDetails }
-		delete newDetails[productIdToRemove]
-		setProductDetails(newDetails)
+	const handleRemoveProduct = async (productIdToRemove) => {
+		try {
+			await deleteProduct(productIdToRemove)
+			setProducts(
+				products.filter((product) => product.productId !== productIdToRemove)
+			)
+			users.setCartCount(users.cartCount - 1)
+			const newDetails = { ...productDetails }
+			delete newDetails[productIdToRemove]
+			setProductDetails(newDetails)
+		} catch (error) {
+			console.error('Ошибка при удалении продукта:', error)
+		}
 	}
 
-	// Обработчик обновления информации о продукте в корзине
 	const handleUpdateProduct = (updatedProduct) => {
 		setProducts(
 			products.map((product) =>
@@ -63,7 +67,6 @@ const Basket = () => {
 		)
 	}
 
-	// Получение общей стоимости продуктов в корзине
 	const getTotalPrice = () => {
 		return products.reduce((total, product) => {
 			const details = productDetails[product.productId]
@@ -71,20 +74,40 @@ const Basket = () => {
 		}, 0)
 	}
 
-	// Обработчик создания заказа
-	const handleCreateOrder = async () => {
+	const handleCreateOrder = async (address) => {
+		if (!address) {
+			console.error('Address is required')
+			return
+		}
+		const token = localStorage.getItem('token')
+		const decodedToken = jwtDecode(token)
+		const userId = decodedToken.id
 		try {
-			// Получение id корзины пользователя
-			const basketId = users.basketId
-			// Добавление id корзины к каждому продукту
-			const productsWithBasketProductId = products.map((product) => ({
-				...product,
-				basketProductId: product.id,
-			}))
-			// Создание заказа на сервере
-			await createOrder({ basketId, products: productsWithBasketProductId })
-			// Очистка корзины после создания заказа
-			setProducts([])
+			const productsWithDetails = products.map((product) => {
+				const details = productDetails[product.productId]
+				if (!details) {
+					throw new Error(
+						`Деталей продукта по ID ${product.productId} не найдено`
+					)
+				}
+				return {
+					basketProductId: product.productId,
+					price: details.price,
+					quantity: product.quantity,
+				}
+			})
+
+			await createOrders({
+				userId: userId,
+				products: productsWithDetails,
+				address: address.value,
+			})
+			await Promise.all(
+				products.map((product) =>
+					removeBasketProduct(product.basketId, product.productId)
+				)
+			)
+			await setProducts([])
 			users.setCartCount(0)
 		} catch (error) {
 			console.error('Ошибка при создании заказа:', error)
