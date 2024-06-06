@@ -7,7 +7,7 @@ import {
 	createOrders,
 	deleteProduct,
 	removeBasketProduct,
-} from '../http/productAPI' // import deleteProduct
+} from '../http/productAPI'
 import '../css/Main.css'
 import { Context } from '../index'
 import { jwtDecode } from 'jwt-decode'
@@ -44,22 +44,26 @@ const Basket = () => {
 
 	const handleRemoveProduct = async (productIdToRemove) => {
 		try {
-			await deleteProduct(productIdToRemove)
-			setProducts(
-				products.filter((product) => product.productId !== productIdToRemove)
+			// await deleteProduct(productIdToRemove)
+			setProducts((prevProducts) =>
+				prevProducts.filter(
+					(product) => product.productId !== productIdToRemove
+				)
 			)
-			users.setCartCount(users.cartCount - 1)
-			const newDetails = { ...productDetails }
-			delete newDetails[productIdToRemove]
-			setProductDetails(newDetails)
+			users.setCartCount((prevCount) => prevCount - 1)
+			setProductDetails((prevDetails) => {
+				const newDetails = { ...prevDetails }
+				delete newDetails[productIdToRemove]
+				return newDetails
+			})
 		} catch (error) {
 			console.error('Ошибка при удалении продукта:', error)
 		}
 	}
 
 	const handleUpdateProduct = (updatedProduct) => {
-		setProducts(
-			products.map((product) =>
+		setProducts((prevProducts) =>
+			prevProducts.map((product) =>
 				product.productId === updatedProduct.productId
 					? updatedProduct
 					: product
@@ -91,7 +95,7 @@ const Basket = () => {
 					)
 				}
 				return {
-					basketProductId: product.productId,
+					basketProductId: product.id,
 					price: details.price,
 					quantity: product.quantity,
 				}
@@ -107,7 +111,7 @@ const Basket = () => {
 					removeBasketProduct(product.basketId, product.productId)
 				)
 			)
-			await setProducts([])
+			setProducts([])
 			users.setCartCount(0)
 		} catch (error) {
 			console.error('Ошибка при создании заказа:', error)

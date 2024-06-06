@@ -22,6 +22,9 @@ export default class UserStore {
 	get users() {
 		return this._users
 	}
+	get cartCount() {
+		return this._cartCount
+	}
 	setCartCount(count) {
 		this._cartCount = count
 	}

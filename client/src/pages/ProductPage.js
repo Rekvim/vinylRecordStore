@@ -49,6 +49,8 @@ const ProductPage = () => {
 								toast.info('Количество товара увеличено.')
 							} else {
 								await createBasketProduct({ basketId: userId, productId: id })
+								users.setCartCount((prevCount) => prevCount + 1)
+
 								toast.info('Товар добавлен в корзину.')
 							}
 						} else {

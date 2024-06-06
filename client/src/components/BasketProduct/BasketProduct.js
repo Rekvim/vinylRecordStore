@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import '../../css/Main.css'
 import {
 	removeBasketProduct,
-	fetchOneProduct,
 	increaseBasketProductQuantity,
 	decreaseBasketProductQuantity,
 } from '../../http/productAPI'

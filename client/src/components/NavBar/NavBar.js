@@ -158,7 +158,7 @@ const NavBar = observer(() => {
 								</defs>
 							</svg>
 							{users.cartCount > 0 && (
-								<span className='cart-count'>{users.cartCount}</span>
+								<span className='cart-count-badge'>{users.cartCount}</span>
 							)}
 						</NavLink>
 						<NavLink
