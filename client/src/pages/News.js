@@ -15,7 +15,7 @@ const News = observer(() => {
 			products.setNews(data.rows)
 			products.setTotalCount(data.count)
 		})
-	}, [products, products.page]) // products не используется внутри, поэтому его можно убрать из зависимостей
+	}, [products, products.page])
 
 	return (
 		<main className='container'>

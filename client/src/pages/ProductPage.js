@@ -5,6 +5,8 @@ import {
 	fetchBasket,
 	createBasketProduct,
 	increaseBasketProductQuantity,
+	createFavourite,
+	fetchFavourites,
 } from '../http/productAPI'
 import { observer } from 'mobx-react-lite'
 import { jwtDecode } from 'jwt-decode'
@@ -15,7 +17,8 @@ import { Context } from '../index'
 
 const ProductPage = () => {
 	const [product, setProduct] = useState({ info: [] })
-	const [isAddingToBasket, setIsAddingToBasket] = useState(false) // Состояние для блокировки кнопки
+	const [isAddingToBasket, setIsAddingToBasket] = useState(false)
+	const [isAddingToFavourite, setIsAddingToFavourite] = useState(false) // Состояние для блокировки кнопки избранного
 	const { id } = useParams()
 	const { users } = useContext(Context)
 
@@ -25,8 +28,7 @@ const ProductPage = () => {
 
 	const handleAddToBasket = async () => {
 		if (!isAddingToBasket) {
-			// Проверяем, не добавляется ли товар уже
-			setIsAddingToBasket(true) // Блокируем кнопку
+			setIsAddingToBasket(true)
 
 			if (users.isAuth) {
 				const token = localStorage.getItem('token')
@@ -66,7 +68,47 @@ const ProductPage = () => {
 				toast.error('Авторизуйтесь!')
 			}
 
-			setIsAddingToBasket(false) // Разблокируем кнопку после выполнения операции
+			setIsAddingToBasket(false)
+		}
+	}
+
+	const handleAddToFavourite = async () => {
+		if (!isAddingToFavourite) {
+			setIsAddingToFavourite(true)
+
+			if (users.isAuth) {
+				const token = localStorage.getItem('token')
+				if (token) {
+					try {
+						const decodedToken = jwtDecode(token)
+						const userId = decodedToken.id
+
+						if (userId) {
+							const favourites = await fetchFavourites(userId)
+							const favouriteProduct = favourites.find(
+								(p) => p.productId === parseInt(id)
+							)
+
+							if (favouriteProduct) {
+								toast.info('Товар уже в избранном.')
+							} else {
+								await createFavourite(id, userId)
+								toast.info('Товар добавлен в избранное.')
+							}
+						} else {
+							toast.error('ID пользователя не найден в token')
+						}
+					} catch (error) {
+						toast.error('Ошибка при добавлении в избранное.')
+					}
+				} else {
+					toast.error('token не найден')
+				}
+			} else {
+				toast.error('Авторизуйтесь!')
+			}
+
+			setIsAddingToFavourite(false)
 		}
 	}
 
@@ -89,9 +131,16 @@ const ProductPage = () => {
 					<button
 						onClick={handleAddToBasket}
 						className='productPage-button button-custom'
-						disabled={isAddingToBasket} // Блокируем кнопку при добавлении в корзину
+						disabled={isAddingToBasket}
 					>
 						{isAddingToBasket ? 'Добавляется...' : 'В корзину'}
+					</button>
+					<button
+						onClick={handleAddToFavourite}
+						className='productPage-button button-custom'
+						disabled={isAddingToFavourite}
+					>
+						{isAddingToFavourite ? 'Добавляется...' : 'В избранное'}
 					</button>
 					<b className='productPage-price medium-title'>{product.price} руб.</b>
 				</div>

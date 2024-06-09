@@ -9,7 +9,27 @@ export const createAuthors = async (author) => {
 	const { data } = await $authHost.post('api/authors', author)
 	return data
 }
+export const fetchFavourites = async (userId) => {
+	const { data } = await $authHost.get(`/api/favourites/${userId}`)
+	return data
+}
+export const fetchBasket = async (basketId) => {
+	const { data } = await $authHost.get(`/api/basketProducts/${basketId}`)
+	return data
+}
+export const removeFavourite = async (productId, userId) => {
+	await $authHost.delete(`/api/favourites`, {
+		data: { productId, userId },
+	})
+}
 
+export const createFavourite = async (productId, userId) => {
+	const { data } = await $authHost.post(`/api/favourites`, {
+		productId,
+		userId,
+	})
+	return data
+}
 export const createProducts = async (product) => {
 	const { data } = await $authHost.post('/api/products', product)
 	return data
@@ -113,10 +133,5 @@ export const fetchProduct = async () => {
 
 export const fetchOneProduct = async (id) => {
 	const { data } = await $host.get('/api/products/' + id)
-	return data
-}
-
-export const fetchBasket = async () => {
-	const { data } = await $host.get('/api/basketProducts')
 	return data
 }

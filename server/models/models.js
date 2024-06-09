@@ -8,6 +8,12 @@ const Role = sequelize.define('roles', {
 	name: { type: DataTypes.STRING, allowNull: false },
 })
 
+const Favourite = sequelize.define('favourites', {
+	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+	productId: { type: DataTypes.INTEGER, allowNull: false },
+	userId: { type: DataTypes.INTEGER, allowNull: false },
+})
+
 const User = sequelize.define('users', {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 	name: { type: DataTypes.STRING },
@@ -43,7 +49,7 @@ const Basket = sequelize.define('baskets', {
 })
 const BasketProduct = sequelize.define('basket_products', {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-	quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 }, // Новое поле для количества товаров в корзине
+	quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
 })
 const Order = sequelize.define('orders', {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -93,9 +99,6 @@ Order.belongsTo(BasketProduct)
 New.hasMany(NewInfo, { as: 'info' })
 NewInfo.belongsTo(New)
 
-// NewInfo.hasOne(New)
-// New.belongsTo(NewInfo)
-
 module.exports = {
 	Role,
 	User,
@@ -106,6 +109,7 @@ module.exports = {
 	ProductInfo,
 	BasketProduct,
 	Order,
+	Favourite,
 	New,
 	NewInfo,
 }

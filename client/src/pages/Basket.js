@@ -5,7 +5,6 @@ import {
 	fetchBasket,
 	fetchOneProduct,
 	createOrders,
-	deleteProduct,
 	removeBasketProduct,
 } from '../http/productAPI'
 import '../css/Main.css'
@@ -22,9 +21,18 @@ const Basket = () => {
 	useEffect(() => {
 		const loadBasket = async () => {
 			try {
-				const basketProducts = await fetchBasket()
+				const token = localStorage.getItem('token')
+				if (!token) {
+					throw new Error('Token not found')
+				}
+
+				const decodedToken = jwtDecode(token)
+				const basketId = decodedToken.id
+
+				const basketProducts = await fetchBasket(basketId)
+				console.log('Basket products:', basketProducts) // Debug
 				setProducts(basketProducts)
-				users.setCartCount(basketProducts.length)
+				users.setCartCount(basketProducts.length) // Set cart count
 
 				const details = await Promise.all(
 					basketProducts.map((product) => fetchOneProduct(product.productId))
@@ -44,7 +52,6 @@ const Basket = () => {
 
 	const handleRemoveProduct = async (productIdToRemove) => {
 		try {
-			// await deleteProduct(productIdToRemove)
 			setProducts((prevProducts) =>
 				prevProducts.filter(
 					(product) => product.productId !== productIdToRemove

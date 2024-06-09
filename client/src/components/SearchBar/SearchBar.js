@@ -9,7 +9,7 @@ const SearchBar = () => {
 	const { products } = useContext(Context) // Получаем контекст с продуктами
 	const [title, setTitle] = useState('') // Состояние для ввода текста поиска
 	const [localProducts, setLocalProducts] = useState([]) // Локальное состояние для продуктов, отображаемых в результатах поиска
-	const debouncedSearchTerm = useDebounce(title, 300) // Дебаунс (задержка) для текста поиска на 300 мс
+	const debouncedSearchTerm = useDebounce(title, 300) // Задержка для текста поиска на 300 мс
 
 	// Обновляем title в products, когда изменяется debouncedSearchTerm
 	useEffect(() => {

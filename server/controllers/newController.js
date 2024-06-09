@@ -7,6 +7,7 @@ class NewController {
 			let { title, description, info } = req.body
 			const news = await New.create({ title, description })
 			if (info) {
+				// Если есть дополнительный параметр "info", то он разбивается на массив данных и записывается в таблицу "NewInfo"
 				info = JSON.parse(info)
 				info.forEach((i) =>
 					NewInfo.create({
@@ -17,8 +18,8 @@ class NewController {
 				)
 			}
 			return res.json(news)
-		} catch (e) {
-			next(ApiError.badRequest(e.message))
+		} catch (error) {
+			next(ApiError.badRequest(error.message))
 		}
 	}
 	async get(req, res) {

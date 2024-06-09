@@ -4,7 +4,7 @@ const basketProductController = require('../controllers/BasketProductController'
 
 router.post('/', basketProductController.create)
 router.delete('/:basketId/:productId', basketProductController.destroy)
-router.get('/', basketProductController.get)
+router.get('/:basketId', basketProductController.get)
 router.put(
 	'/increaseQuantity/:basketId/:productId',
 	basketProductController.increaseQuantity
@@ -12,6 +12,6 @@ router.put(
 router.put(
 	'/decreaseQuantity/:basketId/:productId',
 	basketProductController.decreaseQuantity
-) // Новый маршрут
+)
 
 module.exports = router

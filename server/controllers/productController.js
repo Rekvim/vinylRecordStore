@@ -17,6 +17,7 @@ class ProductController {
 				image_url,
 			})
 			if (info) {
+				// Если есть дополнительный параметр "info", то он разбивается на массив данных и записывается в таблицу "ProductInfo"
 				info = JSON.parse(info)
 				info.forEach((i) =>
 					ProductInfo.create({
@@ -27,13 +28,14 @@ class ProductController {
 				)
 			}
 			return res.json(product)
-		} catch (e) {
-			next(ApiError.badRequest(e.message))
+		} catch (error) {
+			next(ApiError.badRequest(error.message))
 		}
 	}
-	async getAll(req, res) {
+	async getAll(req, res, next) {
 		let { name, genreId, page, limit, minPrice, maxPrice } = req.query
 
+		// настройка "offset"
 		page = parseInt(page) || 1
 		limit = parseInt(limit) || 9
 		let offset = page * limit - limit
@@ -41,7 +43,7 @@ class ProductController {
 		// Преобразование значений цены в числа или установление undefined
 		minPrice = minPrice ? parseFloat(minPrice) : undefined
 		maxPrice = maxPrice ? parseFloat(maxPrice) : undefined
-
+		// логика фильтрации
 		const whereClause = {
 			...(genreId && { genreId }),
 			...(name && { name: { [Op.iLike]: `%${name}%` } }),
@@ -53,8 +55,7 @@ class ProductController {
 			if (maxPrice !== undefined) whereClause.price[Op.lte] = maxPrice
 		}
 
-		console.log('Where clause:', whereClause) // Debug line
-
+		// создание продукта
 		try {
 			const products = await Product.findAndCountAll({
 				where: whereClause,
@@ -63,8 +64,7 @@ class ProductController {
 			})
 			return res.json(products)
 		} catch (error) {
-			console.error('Error fetching products:', error)
-			return res.status(500).json({ message: 'Error fetching products' })
+			next(ApiError.badRequest(error.message))
 		}
 	}
 

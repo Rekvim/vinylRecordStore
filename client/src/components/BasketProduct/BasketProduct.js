@@ -8,6 +8,7 @@ import {
 
 const BasketProduct = ({ product, productDetails, onRemove, onUpdate }) => {
 	const handleIncreaseQuantity = async () => {
+		// Функция увелечения количества продукта
 		try {
 			const updatedProduct = await increaseBasketProductQuantity(
 				product.basketId,
@@ -20,6 +21,7 @@ const BasketProduct = ({ product, productDetails, onRemove, onUpdate }) => {
 	}
 
 	const handleDecreaseQuantity = async () => {
+		// Если продуктов больше 1, происходит уменьшение количества, иначе товар удалится
 		if (product.quantity > 1) {
 			try {
 				const updatedProduct = await decreaseBasketProductQuantity(

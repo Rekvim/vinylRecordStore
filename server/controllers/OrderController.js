@@ -37,7 +37,7 @@ class OrderController {
 			const orders = await Order.findAll()
 			return res.json(orders)
 		} catch (error) {
-			res.status(500).json({ message: 'Ошибка при получении заказов' })
+			res.status(500).json({ error: error.message })
 		}
 	}
 }

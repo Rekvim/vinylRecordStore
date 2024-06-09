@@ -18,11 +18,6 @@ class BasketProductController {
 		}
 	}
 
-	async get(req, res) {
-		const basketProduct = await BasketProduct.findAll()
-		return res.json(basketProduct)
-	}
-
 	async increaseQuantity(req, res) {
 		const { basketId, productId } = req.params
 		try {
@@ -36,7 +31,6 @@ class BasketProductController {
 			await basketProduct.save()
 			return res.json(basketProduct)
 		} catch (error) {
-			console.error('Ошибка при увеличении количества товара в корзине', error)
 			return res.status(500).json({ error: 'Внутренняя ошибка сервера' })
 		}
 	}
@@ -59,9 +53,13 @@ class BasketProductController {
 				.status(400)
 				.json({ message: 'Невозможно уменьшить количество товара до нуля' })
 		} catch (error) {
-			console.error('Ошибка при уменьшении количества товара в корзине', error)
 			return res.status(500).json({ error: 'Внутренняя ошибка сервера' })
 		}
+	}
+	async get(req, res) {
+		const { basketId } = req.params
+		const basketProduct = await BasketProduct.findAll({ where: { basketId } })
+		return res.json(basketProduct)
 	}
 }
 
