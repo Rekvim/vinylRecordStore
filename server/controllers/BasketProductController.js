@@ -58,8 +58,16 @@ class BasketProductController {
 	}
 	async get(req, res) {
 		const { basketId } = req.params
-		const basketProduct = await BasketProduct.findAll({ where: { basketId } })
-		return res.json(basketProduct)
+		if (!basketId || isNaN(basketId)) {
+			return res.status(400).json({ error: 'Invalid basketId' })
+		}
+		try {
+			const basketProduct = await BasketProduct.findAll({ where: { basketId } })
+			return res.json(basketProduct)
+		} catch (error) {
+			console.error('Error fetching basket products:', error)
+			return res.status(500).json({ error: 'Internal server error' })
+		}
 	}
 }
 

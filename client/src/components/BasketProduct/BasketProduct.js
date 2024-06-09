@@ -5,6 +5,7 @@ import {
 	increaseBasketProductQuantity,
 	decreaseBasketProductQuantity,
 } from '../../http/productAPI'
+import { NavLink } from 'react-router-dom'
 
 const BasketProduct = ({ product, productDetails, onRemove, onUpdate }) => {
 	const handleIncreaseQuantity = async () => {
@@ -47,7 +48,7 @@ const BasketProduct = ({ product, productDetails, onRemove, onUpdate }) => {
 	}
 
 	return (
-		<div className='card-product'>
+		<NavLink to={'/product/' + productDetails.id} className='card-product'>
 			<div className='card-product-left-bar'>
 				<img
 					className='card-product-img'
@@ -76,7 +77,7 @@ const BasketProduct = ({ product, productDetails, onRemove, onUpdate }) => {
 					{productDetails.price * product.quantity} руб.
 				</p>
 			</div>
-		</div>
+		</NavLink>
 	)
 }
 

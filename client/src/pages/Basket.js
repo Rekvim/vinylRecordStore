@@ -25,12 +25,13 @@ const Basket = () => {
 				if (!token) {
 					throw new Error('Token not found')
 				}
-
 				const decodedToken = jwtDecode(token)
 				const basketId = decodedToken.id
-
+				if (!basketId) {
+					console.error('Basket ID is undefined')
+					return // Prevent further execution if basketId is not valid
+				}
 				const basketProducts = await fetchBasket(basketId)
-				console.log('Basket products:', basketProducts) // Debug
 				setProducts(basketProducts)
 				users.setCartCount(basketProducts.length) // Set cart count
 
@@ -44,9 +45,10 @@ const Basket = () => {
 				setProductDetails(detailsMap)
 				setIsLoading(false)
 			} catch (error) {
-				console.error('Ошибка при загрузке продуктов:', error)
+				console.error('Error loading basket products:', error)
 			}
 		}
+
 		loadBasket()
 	}, [users])
 
