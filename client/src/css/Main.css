@@ -560,7 +560,7 @@ h6 {
 .productPage__img {
 	min-height: 540px;
 	min-width: 540px;
-	background-color: gray;
+	background-color: #f5f5f5;
 }
 
 .productPage-name {

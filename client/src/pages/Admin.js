@@ -9,7 +9,6 @@ import CreateNew from '../components/modals/CreateNew'
 
 const Admin = () => {
 	const [isAdmin, setIsAdmin] = useState(false)
-	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
 		const fetchUserInfo = async () => {
@@ -18,7 +17,6 @@ const Admin = () => {
 				if (!token) {
 					console.error('Token not found')
 					setIsAdmin(false)
-					setLoading(false)
 					return
 				}
 
@@ -34,8 +32,6 @@ const Admin = () => {
 			} catch (error) {
 				console.error('Failed to fetch user info:', error)
 				setIsAdmin(false)
-			} finally {
-				setLoading(false)
 			}
 		}
 
@@ -50,10 +46,6 @@ const Admin = () => {
 
 	const closeModal = () => {
 		setModalVisible(null)
-	}
-
-	if (loading) {
-		return <div>Loading...</div> // индикатор загрузки
 	}
 
 	if (!isAdmin) {

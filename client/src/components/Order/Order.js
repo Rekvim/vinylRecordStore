@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite'
 import { NavLink } from 'react-router-dom'
 import { AddressSuggestions } from 'react-dadata'
 import 'react-dadata/dist/react-dadata.css'
-
+import { toast } from 'react-toastify'
 const Order = observer(({ totalPrice, onCreateOrder }) => {
 	const [address, setAddress] = useState(null)
 	const token = 'fcd47c1a2a6b95056baefd5669b236bf00d10f76'
@@ -13,7 +13,7 @@ const Order = observer(({ totalPrice, onCreateOrder }) => {
 		if (address && address.value) {
 			onCreateOrder(address)
 		} else {
-			console.error('Address is required')
+			toast.error(`Адрес не введен`)
 		}
 	}
 

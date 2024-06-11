@@ -10,30 +10,23 @@ import {
 } from '../http/productAPI'
 import '../css/Main.css'
 import { Context } from '../index'
-import { jwtDecode } from 'jwt-decode'
+import { toast } from 'react-toastify'
 
 const Basket = () => {
 	const { users } = useContext(Context)
 
 	const [products, setProducts] = useState([])
 	const [productDetails, setProductDetails] = useState({})
-	const [isLoading, setIsLoading] = useState(true)
+	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
 		const loadBasket = async () => {
 			try {
 				const token = localStorage.getItem('token')
 				if (!token) {
-					throw new Error('Token not found')
+					throw new Error('Токен не найден')
 				}
-				const decodedToken = jwtDecode(token)
-				const basketId = decodedToken
-				console.log(basketId.id)
-				if (!basketId) {
-					console.error('Basket ID is undefined')
-					return
-				}
-				const basketProducts = await fetchBasket(basketId.id)
+				const basketProducts = await fetchBasket(users.usersId)
 				setProducts(basketProducts)
 				users.setCartCount(basketProducts.length)
 
@@ -45,7 +38,7 @@ const Basket = () => {
 					detailsMap[detail.id] = detail
 				})
 				setProductDetails(detailsMap)
-				setIsLoading(false)
+				setLoading(false)
 			} catch (error) {
 				console.error('Error loading basket products:', error)
 			}
@@ -68,7 +61,7 @@ const Basket = () => {
 				return newDetails
 			})
 		} catch (error) {
-			console.error('Ошибка при удалении продукта:', error)
+			toast.error('Ошибка при удалении продукта:', error)
 		}
 	}
 
@@ -115,6 +108,7 @@ const Basket = () => {
 					removeBasketProduct(product.basketId, product.productId)
 				)
 			)
+			toast.info('Заказ создан!')
 			setProducts([])
 			users.setCartCount(0)
 		} catch (error) {
@@ -122,8 +116,12 @@ const Basket = () => {
 		}
 	}
 
-	if (isLoading) {
-		return <LoadingScreen loading={isLoading} />
+	if (loading) {
+		return (
+			<main className='main container'>
+				<LoadingScreen loading={loading} />
+			</main>
+		)
 	}
 
 	return (

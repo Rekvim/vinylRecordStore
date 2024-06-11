@@ -10,6 +10,13 @@ import { jwtDecode } from 'jwt-decode'
 const NavBar = observer(() => {
 	const { users } = useContext(Context)
 
+	const token = localStorage.getItem('token')
+	if (!token) {
+		throw new Error('Token not found')
+	}
+	const decodedToken = jwtDecode(token)
+	const userId = decodedToken.id // Предполагаем, что id пользователя хранится в token
+	users.setUsersId(userId)
 	const logOut = () => {
 		users.setUsers({})
 		users.setIsAuth(false)
@@ -138,6 +145,7 @@ const NavBar = observer(() => {
 					<nav className='header__nav-user-bar'>
 						<NavLink to={'/favorite'}>
 							<svg
+								className='card-icon header-icon'
 								width='25'
 								height='25'
 								viewBox='0 0 25 25'
@@ -146,8 +154,9 @@ const NavBar = observer(() => {
 							>
 								<g clipPath='url(#clip0_1_15)'>
 									<path
+										className='icon-background'
 										d='M12.501 3.16119C15.4372 0.524988 19.9746 0.612487 22.8033 3.44618C25.6308 6.28113 25.7283 10.796 23.0983 13.741L12.4985 24.3558L1.90122 13.741C-0.728729 10.796 -0.62998 6.27363 2.19622 3.44618C5.02741 0.616237 9.55608 0.521238 12.501 3.16119ZM21.0334 5.2124C19.1584 3.33494 16.1335 3.25869 14.171 5.02115L12.5023 6.51863L10.8323 5.0224C8.86359 3.25744 5.8449 3.33494 3.96493 5.2149C2.10247 7.07737 2.00872 10.0586 3.72494 12.0285L12.4998 20.8171L21.2746 12.0298C22.9921 10.0586 22.8983 7.08112 21.0334 5.2124Z'
-										fill='#181818'
+										fill='rgba(45, 45, 45, 0.6)'
 									/>
 								</g>
 								<defs>

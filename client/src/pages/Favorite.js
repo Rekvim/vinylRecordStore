@@ -8,13 +8,13 @@ import FavoriteProduct from '../components/FavoriteProduct/FavoriteProduct'
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 import '../css/Main.css'
 import { Context } from '../index'
-import { jwtDecode } from 'jwt-decode'
-
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 const Favorite = () => {
 	const { users } = useContext(Context)
 	const [favorites, setFavorites] = useState([])
 	const [productDetails, setProductDetails] = useState({})
-	const [isLoading, setIsLoading] = useState(true)
+	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
 		const loadFavorites = async () => {
@@ -37,17 +37,17 @@ const Favorite = () => {
 				})
 
 				setProductDetails(detailsMap)
-				setIsLoading(false) // Установка isLoading в false после успешной загрузки данных
+				setLoading(false) // Установка loading в false после успешной загрузки данных
 			} catch (error) {
 				console.error('Ошибка при загрузке избранных продуктов:', error)
-				setIsLoading(false) // Установка isLoading в false в случае ошибки
+				setLoading(false) // Установка loading в false в случае ошибки
 			}
 		}
 
 		if (users.users) {
 			loadFavorites()
 		}
-	}, [users.users]) // Изменил зависимость на users.user
+	}, [users.users, users.usersId]) // Изменил зависимость на users.user
 
 	const handleRemoveProduct = async (productIdToRemove) => {
 		console.log('Product ID to remove:', productIdToRemove) // Log the productIdToRemove for debugging
@@ -56,22 +56,23 @@ const Favorite = () => {
 			if (!token) {
 				throw new Error('Token not found')
 			}
-
-			const decodedToken = jwtDecode(token)
-			const userId = decodedToken.id
 			setFavorites((prevFavorites) =>
 				prevFavorites.filter(
 					(product) => product.productId !== productIdToRemove
 				)
 			)
-			await removeFavorite(productIdToRemove, userId)
+			await removeFavorite(productIdToRemove, users.usersId)
 		} catch (error) {
-			console.error('Ошибка при удалении продукта из избранного:', error)
+			toast.error('Ошибка при удалении продукта из избранного:', error)
 		}
 	}
 
-	if (isLoading) {
-		return <LoadingScreen loading={isLoading} />
+	if (loading) {
+		return (
+			<main className='main container'>
+				<LoadingScreen loading={loading} />
+			</main>
+		)
 	}
 
 	return (

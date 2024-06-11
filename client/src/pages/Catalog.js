@@ -10,7 +10,7 @@ import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 // Компонент Catalog обернут в observer для отслеживания изменений в MobX состоянии
 const Catalog = observer(() => {
 	const { products } = useContext(Context) // Получение контекста с продуктами
-	const [isLoading, setIsLoading] = useState(true)
+	const [loading, setLoading] = useState(true)
 
 	// Эффект для получения жанров при загрузке компонента
 	useEffect(() => {
@@ -30,7 +30,7 @@ const Catalog = observer(() => {
 			products.setProducts(data.rows)
 			products.setTotalCount(data.count)
 		})
-		setIsLoading(false)
+		setLoading(false)
 	}, [
 		products.selectedGenres, // Зависимость от выбранных жанров
 		products.title, // Зависимость от заголовка (поискового запроса)
@@ -39,8 +39,12 @@ const Catalog = observer(() => {
 		products.page, // Зависимость от текущей страницы
 		products, // Добавлено products для обеспечения зависимости
 	])
-	if (isLoading) {
-		return <LoadingScreen loading={isLoading} />
+	if (loading) {
+		return (
+			<main className='main container'>
+				<LoadingScreen loading={loading} />
+			</main>
+		)
 	}
 	return (
 		<main>

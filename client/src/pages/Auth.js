@@ -7,7 +7,7 @@ import { Context } from '../index'
 import PhoneInput from 'react-phone-number-input'
 import ru from 'react-phone-number-input/locale/ru'
 import 'react-phone-number-input/style.css'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 const Auth = observer(() => {
@@ -125,7 +125,6 @@ const Auth = observer(() => {
 					{isLogin ? 'Войти' : 'Регистрация'}
 				</button>
 			</div>
-			<ToastContainer />
 		</div>
 	)
 })
