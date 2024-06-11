@@ -1,9 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
+import { Context } from '../index'
 import Swiper from '../components/Swiper/Swiper'
-import { fetchProductVinyl } from '../http/productAPI'
+import { fetchProduct } from '../http/productAPI'
 import '../css/Main.css'
+import { jwtDecode } from 'jwt-decode'
 
 const Shop = () => {
+	const { users } = useContext(Context)
+	const token = localStorage.getItem('token')
+	if (!token) {
+		throw new Error('Token not found')
+	}
+	const decodedToken = jwtDecode(token)
+	const userId = decodedToken.id // Предполагаем, что id пользователя хранится в token
+	users.setUsersId(userId)
 	// Локальные состояния для хранения данных о лучших продажах и новых поступлениях
 	const [bestsellers, setBestsellers] = useState([])
 	const [newReleases, setNewReleases] = useState([])
@@ -12,12 +22,8 @@ const Shop = () => {
 		const fetchData = async () => {
 			try {
 				// Получаем данные о бестселлерах и новых поступлениях
-				const bestsellersData = await fetchProductVinyl()
-				const newReleasesData = await fetchProductVinyl()
-
-				// Выводим данные в консоль для отладки
-				console.log('Bestsellers data:', bestsellersData)
-				console.log('New releases data:', newReleasesData)
+				const bestsellersData = await fetchProduct()
+				const newReleasesData = await fetchProduct()
 
 				// Проверяем полученные данные и устанавливаем их в локальное состояние
 				if (bestsellersData && Array.isArray(bestsellersData.rows)) {

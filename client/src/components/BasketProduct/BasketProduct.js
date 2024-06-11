@@ -48,7 +48,7 @@ const BasketProduct = ({ product, productDetails, onRemove, onUpdate }) => {
 	}
 
 	return (
-		<NavLink to={'/product/' + productDetails.id} className='card-product'>
+		<div to={'/product/' + productDetails.id} className='card-product'>
 			<div className='card-product-left-bar'>
 				<img
 					className='card-product-img'
@@ -77,7 +77,7 @@ const BasketProduct = ({ product, productDetails, onRemove, onUpdate }) => {
 					{productDetails.price * product.quantity} руб.
 				</p>
 			</div>
-		</NavLink>
+		</div>
 	)
 }
 

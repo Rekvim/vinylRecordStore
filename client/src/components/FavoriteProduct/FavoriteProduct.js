@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-const FavouriteProduct = ({ product, productDetails, onRemove }) => {
+const FavoriteProduct = ({ product, productDetails, onRemove }) => {
 	return (
 		<NavLink to={'/product/' + productDetails.id} className='product'>
 			<img
@@ -28,4 +28,4 @@ const FavouriteProduct = ({ product, productDetails, onRemove }) => {
 	)
 }
 
-export default FavouriteProduct
+export default FavoriteProduct

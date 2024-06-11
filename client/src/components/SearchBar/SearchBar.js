@@ -3,7 +3,7 @@ import { Context } from '../../index'
 import './SearchBar.css'
 import { NavLink } from 'react-router-dom'
 import useDebounce from './useDebounce'
-import { fetchProductVinyl } from '../../http/productAPI'
+import { fetchProduct } from '../../http/productAPI'
 
 const SearchBar = () => {
 	const { products } = useContext(Context) // Получаем контекст с продуктами
@@ -21,7 +21,7 @@ const SearchBar = () => {
 	// Эффект для выполнения запроса на сервер при изменении debouncedSearchTerm или других зависимостей
 	useEffect(() => {
 		if (debouncedSearchTerm) {
-			fetchProductVinyl(
+			fetchProduct(
 				products.selectedGenres,
 				debouncedSearchTerm,
 				products.minPrice,

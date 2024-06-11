@@ -5,11 +5,9 @@ import {
 	fetchBasket,
 	createBasketProduct,
 	increaseBasketProductQuantity,
-	createFavourite,
-	fetchFavourites,
+	createFavorite,
 } from '../http/productAPI'
 import { observer } from 'mobx-react-lite'
-import { jwtDecode } from 'jwt-decode'
 import '../css/Main.css'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -18,10 +16,9 @@ import { Context } from '../index'
 const ProductPage = () => {
 	const [product, setProduct] = useState({ info: [] })
 	const [isAddingToBasket, setIsAddingToBasket] = useState(false)
-	const [isAddingToFavourite, setIsAddingToFavourite] = useState(false) // Состояние для блокировки кнопки избранного
+	const [isAddingToFavorite, setIsAddingToFavorite] = useState(false) // Состояние для блокировки кнопки избранного
 	const { id } = useParams()
 	const { users } = useContext(Context)
-
 	useEffect(() => {
 		fetchOneProduct(id).then((data) => setProduct(data))
 	}, [id])
@@ -34,11 +31,8 @@ const ProductPage = () => {
 				const token = localStorage.getItem('token')
 				if (token) {
 					try {
-						const decodedToken = jwtDecode(token)
-						const userId = decodedToken.id
-
-						if (userId) {
-							const basket = await fetchBasket()
+						if (users.usersId) {
+							const basket = await fetchBasket(users.usersId)
 							const basketProduct = basket.find(
 								(p) => p.productId === parseInt(id)
 							)
@@ -50,7 +44,12 @@ const ProductPage = () => {
 								)
 								toast.info('Количество товара увеличено.')
 							} else {
-								await createBasketProduct({ basketId: userId, productId: id })
+								const basketProduct = {
+									basketId: users.usersId,
+									productId: id,
+								}
+
+								await createBasketProduct(basketProduct)
 								users.setCartCount((prevCount) => prevCount + 1)
 
 								toast.info('Товар добавлен в корзину.')
@@ -72,29 +71,17 @@ const ProductPage = () => {
 		}
 	}
 
-	const handleAddToFavourite = async () => {
-		if (!isAddingToFavourite) {
-			setIsAddingToFavourite(true)
+	const handleAddToFavorite = async () => {
+		if (!isAddingToFavorite) {
+			setIsAddingToFavorite(true)
 
 			if (users.isAuth) {
 				const token = localStorage.getItem('token')
 				if (token) {
 					try {
-						const decodedToken = jwtDecode(token)
-						const userId = decodedToken.id
-
-						if (userId) {
-							const favourites = await fetchFavourites(userId)
-							const favouriteProduct = favourites.find(
-								(p) => p.productId === parseInt(id)
-							)
-
-							if (favouriteProduct) {
-								toast.info('Товар уже в избранном.')
-							} else {
-								await createFavourite(id, userId)
-								toast.info('Товар добавлен в избранное.')
-							}
+						if (users.usersId) {
+							await createFavorite(id, users.usersId)
+							toast.info('Товар добавлен в избранное.')
 						} else {
 							toast.error('ID пользователя не найден в token')
 						}
@@ -108,7 +95,7 @@ const ProductPage = () => {
 				toast.error('Авторизуйтесь!')
 			}
 
-			setIsAddingToFavourite(false)
+			setIsAddingToFavorite(false)
 		}
 	}
 
@@ -136,11 +123,11 @@ const ProductPage = () => {
 						{isAddingToBasket ? 'Добавляется...' : 'В корзину'}
 					</button>
 					<button
-						onClick={handleAddToFavourite}
+						onClick={handleAddToFavorite}
 						className='productPage-button button-custom'
-						disabled={isAddingToFavourite}
+						disabled={isAddingToFavorite}
 					>
-						{isAddingToFavourite ? 'Добавляется...' : 'В избранное'}
+						{isAddingToFavorite ? 'Добавляется...' : 'В избранное'}
 					</button>
 					<b className='productPage-price medium-title'>{product.price} руб.</b>
 				</div>

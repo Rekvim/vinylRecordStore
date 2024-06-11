@@ -7,7 +7,7 @@ import ProductPage from './pages/ProductPage'
 import Catalog from './pages/Catalog'
 import NewPage from './pages/NewPage'
 import Admin from './pages/Admin'
-import Favourite from './pages/Favourite'
+import Favorite from './pages/Favorite'
 
 export const authRoutes = [
 	{
@@ -15,12 +15,12 @@ export const authRoutes = [
 		Component: Admin,
 	},
 	{
-		path: '/cart/:id',
+		path: '/basket',
 		Component: Basket,
 	},
 	{
-		path: '/favourite/:id',
-		Component: Favourite,
+		path: '/favorite',
+		Component: Favorite,
 	},
 ]
 

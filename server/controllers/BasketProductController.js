@@ -2,9 +2,17 @@ const { BasketProduct } = require('../models/models')
 
 class BasketProductController {
 	async create(req, res) {
-		const { basketId, productId } = req.body
-		const basketProduct = await BasketProduct.create({ basketId, productId })
-		return res.json(basketProduct)
+		try {
+			const { basketId, productId } = req.body
+			const basketProduct = await BasketProduct.create({
+				basketId,
+				productId,
+			})
+			return res.json(basketProduct)
+		} catch (error) {
+			console.error('Ошибка при добавлении в корзину', error)
+			return res.status(500).json({ error: 'Внутренняя ошибка сервера' })
+		}
 	}
 
 	async destroy(req, res) {

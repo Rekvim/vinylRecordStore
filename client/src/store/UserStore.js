@@ -4,6 +4,7 @@ export default class UserStore {
 	constructor() {
 		this._isAuth = false
 		this._users = {}
+		this._usersId = 0
 		this._cartCount = 0
 		makeAutoObservable(this)
 	}
@@ -11,8 +12,13 @@ export default class UserStore {
 	setIsAuth(bool) {
 		this._isAuth = bool
 	}
+
 	setUsers(users) {
 		this._users = users
+	}
+
+	setUsersId(usersId) {
+		this._usersId = usersId
 	}
 
 	get isAuth() {
@@ -22,9 +28,15 @@ export default class UserStore {
 	get users() {
 		return this._users
 	}
+
+	get usersId() {
+		return this._usersId
+	}
+
 	get cartCount() {
 		return this._cartCount
 	}
+
 	setCartCount(count) {
 		this._cartCount = count
 	}

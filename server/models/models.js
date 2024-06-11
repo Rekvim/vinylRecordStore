@@ -8,7 +8,7 @@ const Role = sequelize.define('roles', {
 	name: { type: DataTypes.STRING, allowNull: false },
 })
 
-const Favourite = sequelize.define('favourites', {
+const Favorite = sequelize.define('favorites', {
 	id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 	productId: { type: DataTypes.INTEGER, allowNull: false },
 	userId: { type: DataTypes.INTEGER, allowNull: false },
@@ -109,7 +109,7 @@ module.exports = {
 	ProductInfo,
 	BasketProduct,
 	Order,
-	Favourite,
+	Favorite,
 	New,
 	NewInfo,
 }

@@ -1,23 +1,23 @@
 import React, { useEffect, useState, useContext } from 'react'
 import {
-	fetchFavourites,
+	fetchFavorites,
 	fetchOneProduct,
-	createFavourite,
-	removeFavourite,
+	createFavorite,
+	removeFavorite,
 } from '../http/productAPI'
-import FavouriteProduct from '../components/FavouriteProduct/FavouriteProduct'
+import FavoriteProduct from '../components/FavoriteProduct/FavoriteProduct'
 import '../css/Main.css'
 import { Context } from '../index'
 import { jwtDecode } from 'jwt-decode'
 
-const Favourite = () => {
+const Favorite = () => {
 	const { users } = useContext(Context)
-	const [favourites, setFavourites] = useState([])
+	const [favorites, setFavorites] = useState([])
 	const [productDetails, setProductDetails] = useState({})
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
-		const loadFavourites = async () => {
+		const loadFavorites = async () => {
 			try {
 				const token = localStorage.getItem('token')
 				if (!token) {
@@ -27,11 +27,11 @@ const Favourite = () => {
 				const decodedToken = jwtDecode(token)
 				const userId = decodedToken.id
 
-				const favouriteProducts = await fetchFavourites(userId)
-				setFavourites(favouriteProducts)
+				const favoriteProducts = await fetchFavorites(userId)
+				setFavorites(favoriteProducts)
 
 				const details = await Promise.all(
-					favouriteProducts.map((product) => fetchOneProduct(product.productId))
+					favoriteProducts.map((product) => fetchOneProduct(product.productId))
 				)
 
 				const detailsMap = {}
@@ -48,11 +48,11 @@ const Favourite = () => {
 		}
 
 		if (users.users) {
-			loadFavourites()
+			loadFavorites()
 		}
 	}, [users.users]) // Изменил зависимость на users.user
 
-	const handleAddFavourite = async (productId) => {
+	const handleAddFavorite = async (productId) => {
 		try {
 			const token = localStorage.getItem('token')
 			if (!token) {
@@ -61,8 +61,8 @@ const Favourite = () => {
 
 			const decodedToken = jwtDecode(token)
 			const userId = decodedToken.id
-			const newFavourite = await createFavourite(productId, userId)
-			setFavourites((prevFavourites) => [...prevFavourites, newFavourite])
+			const newFavorite = await createFavorite(productId, userId)
+			setFavorites((prevFavorites) => [...prevFavorites, newFavorite])
 
 			const productDetail = await fetchOneProduct(productId)
 			setProductDetails((prevDetails) => ({
@@ -84,12 +84,12 @@ const Favourite = () => {
 
 			const decodedToken = jwtDecode(token)
 			const userId = decodedToken.id
-			setFavourites((prevFavourites) =>
-				prevFavourites.filter(
+			setFavorites((prevFavorites) =>
+				prevFavorites.filter(
 					(product) => product.productId !== productIdToRemove
 				)
 			)
-			await removeFavourite(productIdToRemove, userId)
+			await removeFavorite(productIdToRemove, userId)
 		} catch (error) {
 			console.error('Ошибка при удалении продукта из избранного:', error)
 		}
@@ -101,8 +101,8 @@ const Favourite = () => {
 
 	return (
 		<main className='main container'>
-			{favourites.length === 0 ? (
-				<div className='empty-favourite'>
+			{favorites.length === 0 ? (
+				<div className='empty-favorite'>
 					<h2
 						className='medium-title'
 						style={{ textAlign: 'center', width: '1198px' }}
@@ -112,9 +112,9 @@ const Favourite = () => {
 				</div>
 			) : (
 				<div className='card'>
-					<div className='favourite-product'>
-						{favourites.map((product) => (
-							<FavouriteProduct
+					<div className='favorite-product'>
+						{favorites.map((product) => (
+							<FavoriteProduct
 								key={product.productId}
 								product={product}
 								productDetails={productDetails[product.productId]}
@@ -128,4 +128,4 @@ const Favourite = () => {
 	)
 }
 
-export default Favourite
+export default Favorite

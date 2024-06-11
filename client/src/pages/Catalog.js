@@ -3,7 +3,7 @@ import { Context } from '../index'
 import Product from '../components/Product/Product'
 import Filter from '../components/Filter/FilterCatalog'
 import { observer } from 'mobx-react-lite'
-import { fetchGenres, fetchProductVinyl } from '../http/productAPI'
+import { fetchGenres, fetchProduct } from '../http/productAPI'
 import Pagination from '../components/Pagination/Pagination'
 
 // Компонент Catalog обернут в observer для отслеживания изменений в MobX состоянии
@@ -17,7 +17,7 @@ const Catalog = observer(() => {
 
 	// Эффект для получения продуктов при изменении фильтров и параметров пагинации
 	useEffect(() => {
-		fetchProductVinyl(
+		fetchProduct(
 			products.selectedGenres,
 			products.title,
 			products.minPrice,

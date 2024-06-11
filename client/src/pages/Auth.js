@@ -24,10 +24,7 @@ const Auth = observer(() => {
 
 	const handlePhoneChange = (value) => {
 		if (value) {
-			// Удаление всех символов, за исключением начального +
 			const cleanedValue = value.replace(/[^\d+]/g, '')
-
-			// Проверка, чтобы очищенное значение не превышало 12 символов (1 для + и 11 цифр)
 			if (cleanedValue.length <= 12) {
 				setTelephone(value)
 			} else {
@@ -39,7 +36,6 @@ const Auth = observer(() => {
 	}
 
 	const handleKeyDown = (event) => {
-		// Если длина номера телефона больше или равна 12 и клавиша не является Backspace или Delete, предотвращаем ввод
 		if (
 			telephone.length >= 12 &&
 			event.key !== 'Backspace' &&

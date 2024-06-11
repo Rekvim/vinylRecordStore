@@ -144,7 +144,7 @@ const NavBar = observer(() => {
 				</nav>
 				{users.isAuth ? (
 					<nav className='header__nav-user-bar'>
-						<NavLink to={'favourite/' + userId}>
+						<NavLink to={'/favorite'}>
 							<svg
 								width='25'
 								height='25'
@@ -165,7 +165,7 @@ const NavBar = observer(() => {
 								</defs>
 							</svg>
 						</NavLink>
-						<NavLink to={'cart/' + userId} className='menu-user-links'>
+						<NavLink to={'/basket'} className='menu-user-links'>
 							<svg
 								className='card-icon header-icon'
 								width='25'

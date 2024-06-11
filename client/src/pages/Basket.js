@@ -26,14 +26,15 @@ const Basket = () => {
 					throw new Error('Token not found')
 				}
 				const decodedToken = jwtDecode(token)
-				const basketId = decodedToken.id
+				const basketId = decodedToken
+				console.log(basketId.id)
 				if (!basketId) {
 					console.error('Basket ID is undefined')
-					return // Prevent further execution if basketId is not valid
+					return
 				}
-				const basketProducts = await fetchBasket(basketId)
+				const basketProducts = await fetchBasket(basketId.id)
 				setProducts(basketProducts)
-				users.setCartCount(basketProducts.length) // Set cart count
+				users.setCartCount(basketProducts.length)
 
 				const details = await Promise.all(
 					basketProducts.map((product) => fetchOneProduct(product.productId))
