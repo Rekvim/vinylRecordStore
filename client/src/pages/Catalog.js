@@ -1,14 +1,16 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Context } from '../index'
 import Product from '../components/Product/Product'
 import Filter from '../components/Filter/FilterCatalog'
 import { observer } from 'mobx-react-lite'
 import { fetchGenres, fetchProduct } from '../http/productAPI'
 import Pagination from '../components/Pagination/Pagination'
+import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 
 // Компонент Catalog обернут в observer для отслеживания изменений в MobX состоянии
 const Catalog = observer(() => {
 	const { products } = useContext(Context) // Получение контекста с продуктами
+	const [isLoading, setIsLoading] = useState(true)
 
 	// Эффект для получения жанров при загрузке компонента
 	useEffect(() => {
@@ -28,6 +30,7 @@ const Catalog = observer(() => {
 			products.setProducts(data.rows)
 			products.setTotalCount(data.count)
 		})
+		setIsLoading(false)
 	}, [
 		products.selectedGenres, // Зависимость от выбранных жанров
 		products.title, // Зависимость от заголовка (поискового запроса)
@@ -36,7 +39,9 @@ const Catalog = observer(() => {
 		products.page, // Зависимость от текущей страницы
 		products, // Добавлено products для обеспечения зависимости
 	])
-
+	if (isLoading) {
+		return <LoadingScreen loading={isLoading} />
+	}
 	return (
 		<main>
 			<div className='catalog-container container'>

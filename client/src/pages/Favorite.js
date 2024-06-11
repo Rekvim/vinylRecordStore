@@ -2,10 +2,10 @@ import React, { useEffect, useState, useContext } from 'react'
 import {
 	fetchFavorites,
 	fetchOneProduct,
-	createFavorite,
 	removeFavorite,
 } from '../http/productAPI'
 import FavoriteProduct from '../components/FavoriteProduct/FavoriteProduct'
+import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 import '../css/Main.css'
 import { Context } from '../index'
 import { jwtDecode } from 'jwt-decode'
@@ -24,10 +24,7 @@ const Favorite = () => {
 					throw new Error('Token not found')
 				}
 
-				const decodedToken = jwtDecode(token)
-				const userId = decodedToken.id
-
-				const favoriteProducts = await fetchFavorites(userId)
+				const favoriteProducts = await fetchFavorites(users.usersId)
 				setFavorites(favoriteProducts)
 
 				const details = await Promise.all(
@@ -52,28 +49,6 @@ const Favorite = () => {
 		}
 	}, [users.users]) // Изменил зависимость на users.user
 
-	const handleAddFavorite = async (productId) => {
-		try {
-			const token = localStorage.getItem('token')
-			if (!token) {
-				throw new Error('Token not found')
-			}
-
-			const decodedToken = jwtDecode(token)
-			const userId = decodedToken.id
-			const newFavorite = await createFavorite(productId, userId)
-			setFavorites((prevFavorites) => [...prevFavorites, newFavorite])
-
-			const productDetail = await fetchOneProduct(productId)
-			setProductDetails((prevDetails) => ({
-				...prevDetails,
-				[productId]: productDetail,
-			}))
-		} catch (error) {
-			console.error('Ошибка при добавлении в избранное:', error)
-		}
-	}
-
 	const handleRemoveProduct = async (productIdToRemove) => {
 		console.log('Product ID to remove:', productIdToRemove) // Log the productIdToRemove for debugging
 		try {
@@ -96,7 +71,7 @@ const Favorite = () => {
 	}
 
 	if (isLoading) {
-		return <div className='card container'>Загрузка...</div>
+		return <LoadingScreen loading={isLoading} />
 	}
 
 	return (

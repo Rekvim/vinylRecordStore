@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import BasketProduct from '../components/BasketProduct/BasketProduct'
+import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 import Order from '../components/Order/Order'
 import {
 	fetchBasket,
@@ -89,13 +90,6 @@ const Basket = () => {
 	}
 
 	const handleCreateOrder = async (address) => {
-		if (!address) {
-			console.error('Address is required')
-			return
-		}
-		const token = localStorage.getItem('token')
-		const decodedToken = jwtDecode(token)
-		const userId = decodedToken.id
 		try {
 			const productsWithDetails = products.map((product) => {
 				const details = productDetails[product.productId]
@@ -112,7 +106,7 @@ const Basket = () => {
 			})
 
 			await createOrders({
-				userId: userId,
+				userId: users.usersId,
 				products: productsWithDetails,
 				address: address.value,
 			})
@@ -129,7 +123,7 @@ const Basket = () => {
 	}
 
 	if (isLoading) {
-		return <div className='card container'>Загрузка...</div>
+		return <LoadingScreen loading={isLoading} />
 	}
 
 	return (

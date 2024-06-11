@@ -53,7 +53,7 @@ const Admin = () => {
 	}
 
 	if (loading) {
-		return <div>Loading...</div>
+		return <div>Loading...</div> // индикатор загрузки
 	}
 
 	if (!isAdmin) {

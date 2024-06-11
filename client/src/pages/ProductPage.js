@@ -6,6 +6,7 @@ import {
 	createBasketProduct,
 	increaseBasketProductQuantity,
 	createFavorite,
+	fetchFavorites,
 } from '../http/productAPI'
 import { observer } from 'mobx-react-lite'
 import '../css/Main.css'
@@ -74,7 +75,12 @@ const ProductPage = () => {
 	const handleAddToFavorite = async () => {
 		if (!isAddingToFavorite) {
 			setIsAddingToFavorite(true)
-
+			const favorite = await fetchFavorites(users.usersId)
+			const favoriteProduct = favorite.find((p) => p.productId === parseInt(id))
+			if (favoriteProduct) {
+				toast.info('Товар уже в избранном.')
+				return
+			}
 			if (users.isAuth) {
 				const token = localStorage.getItem('token')
 				if (token) {

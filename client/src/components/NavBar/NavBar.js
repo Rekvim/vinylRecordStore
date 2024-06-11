@@ -15,14 +15,6 @@ const NavBar = observer(() => {
 		users.setIsAuth(false)
 	}
 
-	const token = localStorage.getItem('token')
-	if (!token) {
-		throw new Error('Token not found')
-	}
-
-	const decodedToken = jwtDecode(token)
-	const userId = decodedToken.id
-
 	return (
 		<header className='header'>
 			<div className='header-container container'>
