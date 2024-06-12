@@ -58,7 +58,7 @@ export const publicRoutes = [
 		Component: NewPage,
 	},
 	{
-		path: '/cart/politics',
+		path: '/politics',
 		Component: Politics,
 	},
 ]

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import { jwtDecode } from 'jwt-decode' // исправлено имя импорта
+import { jwtDecode } from 'jwt-decode'
 
+import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 import CreateGenres from '../components/modals/CreateGenres'
 import CreateProducts from '../components/modals/CreateProducts'
 import CreateAuthors from '../components/modals/CreateAuthors'
@@ -9,6 +10,7 @@ import CreateNew from '../components/modals/CreateNew'
 
 const Admin = () => {
 	const [isAdmin, setIsAdmin] = useState(false)
+	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
 		const fetchUserInfo = async () => {
@@ -17,6 +19,7 @@ const Admin = () => {
 				if (!token) {
 					console.error('Token not found')
 					setIsAdmin(false)
+					setLoading(false)
 					return
 				}
 
@@ -32,6 +35,8 @@ const Admin = () => {
 			} catch (error) {
 				console.error('Failed to fetch user info:', error)
 				setIsAdmin(false)
+			} finally {
+				setLoading(false)
 			}
 		}
 
@@ -48,24 +53,35 @@ const Admin = () => {
 		setModalVisible(null)
 	}
 
+	if (loading) {
+		return (
+			<main className='main container'>
+				<LoadingScreen loading={loading} />
+			</main>
+		)
+	}
+
 	if (!isAdmin) {
 		return <Navigate to='/' />
 	}
 
 	return (
 		<main className='main container'>
-			<button className='button-custom' onClick={() => openModal('authors')}>
-				Добавить автора
-			</button>
-			<button className='button-custom' onClick={() => openModal('genres')}>
-				Добавить жанр
-			</button>
-			<button className='button-custom' onClick={() => openModal('products')}>
-				Добавить продукт
-			</button>
-			<button className='button-custom' onClick={() => openModal('news')}>
-				Добавить новость
-			</button>
+			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<button className='button-custom' onClick={() => openModal('authors')}>
+					Добавить автора
+				</button>
+				<button className='button-custom' onClick={() => openModal('genres')}>
+					Добавить жанр
+				</button>
+				<button className='button-custom' onClick={() => openModal('products')}>
+					Добавить продукт
+				</button>
+				<button className='button-custom' onClick={() => openModal('news')}>
+					Добавить новость
+				</button>
+			</div>
+
 			{modalVisible === 'authors' && (
 				<CreateAuthors isOpen={true} onClose={closeModal} />
 			)}

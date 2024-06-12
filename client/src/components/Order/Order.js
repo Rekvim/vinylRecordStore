@@ -31,7 +31,7 @@ const Order = observer(({ totalPrice, onCreateOrder }) => {
 			<p className='order-politics'>
 				Нажимая на кнопку «оплатить заказ», я принимаю условия публичной оферты
 				и&nbsp;
-				<NavLink to='politics/' className='politics-links'>
+				<NavLink to='/politics' className='politics-links'>
 					политики&nbsp;конфиденциальности
 				</NavLink>
 			</p>
