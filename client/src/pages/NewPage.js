@@ -7,7 +7,7 @@ import '../css/Main.css'
 
 const NewPage = () => {
 	const [news, setNew] = useState({ info: [] })
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(true) // Состояние загрузки страницы
 
 	const { id } = useParams()
 

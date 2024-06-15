@@ -4,11 +4,12 @@ import { observer } from 'mobx-react-lite'
 import { Context } from '../../index'
 
 const Pagination = observer(() => {
-	const { products } = useContext(Context)
-	const pageCount = Math.ceil(products.totalCount / products.limit)
-	const pages = []
+	const { products } = useContext(Context) // Инициализация контекста
+	const pageCount = Math.ceil(products.totalCount / products.limit) // Подсчет страниц
+	const pages = [] // Создание массива под страницы
 
 	for (let i = 0; i < pageCount; i++) {
+		// Нумерация страниц
 		pages.push(i + 1)
 	}
 

@@ -9,7 +9,7 @@ import { observer } from 'mobx-react-lite'
 
 const News = observer(() => {
 	const { products } = useContext(Context)
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(true) // Состояние загрузки страницы
 
 	// Загрузка новостей при монтировании компонента или изменении страницы
 	useEffect(() => {

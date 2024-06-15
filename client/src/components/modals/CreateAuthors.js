@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { createAuthors } from '../../http/productAPI'
-
+import { toast } from 'react-toastify'
 const CreateAuthors = ({ isOpen, onClose }) => {
 	const [value, setValue] = useState('')
 
@@ -9,6 +9,7 @@ const CreateAuthors = ({ isOpen, onClose }) => {
 			setValue('')
 			onClose()
 		})
+		toast.success('Автор добавлен!')
 	}
 	if (!isOpen) {
 		return null

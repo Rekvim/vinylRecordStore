@@ -17,7 +17,7 @@ const Basket = () => {
 
 	const [products, setProducts] = useState([])
 	const [productDetails, setProductDetails] = useState({})
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(true) // Состояние загрузки страницы
 
 	useEffect(() => {
 		const loadBasket = async () => {

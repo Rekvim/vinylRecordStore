@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { createGenres } from '../../http/productAPI'
+import { toast } from 'react-toastify'
 
 const CreateGenre = ({ isOpen, onClose }) => {
-	const [value, setValue] = useState('')
+	const [value, setValue] = useState('') // Состояние для хранения названия
 
 	const addGenre = () => {
+		// СОздание жанра
 		createGenres({ name: value }).then((data) => {
-			setValue('')
-			onClose()
+			setValue('') // Очищаем состояние
+			onClose() // Закрываем окно
 		})
+		toast.success('Жанр создан!') // Сообщение
 	}
 	if (!isOpen) {
 		return null

@@ -14,7 +14,7 @@ const Favorite = () => {
 	const { users } = useContext(Context)
 	const [favorites, setFavorites] = useState([])
 	const [productDetails, setProductDetails] = useState({})
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(true) // Состояние загрузки страницы
 
 	useEffect(() => {
 		const loadFavorites = async () => {

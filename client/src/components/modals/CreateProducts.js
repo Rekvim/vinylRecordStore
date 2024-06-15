@@ -2,44 +2,52 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Context } from '../../index'
 import { createProducts, fetchGenres } from '../../http/productAPI'
 import { observer } from 'mobx-react-lite'
+import { toast } from 'react-toastify'
 
 const CreateProducts = observer(({ isOpen, onClose }) => {
-	const { products } = useContext(Context)
-	const [name, setName] = useState('')
-	const [price, setPrice] = useState(0)
-	const [imageUrl, setImageUrl] = useState('')
-	const [info, setInfo] = useState([])
+	const { products } = useContext(Context) // Инициализация контекста продукта
+	const [name, setName] = useState('') // Состояние для хранения имени
+	const [price, setPrice] = useState(0) // Состояние для хранения цены
+	const [imageUrl, setImageUrl] = useState('') // Состояние для хранения url
+	const [info, setInfo] = useState([]) // Состояние для хранения массива информации
 
 	useEffect(() => {
+		// Прогрузка всех жанров
 		fetchGenres().then((data) => products.setGenres(data))
 	}, [products])
 
+	// Добавление в массив новой информации
 	const addInfo = () => {
 		setInfo([...info, { title: '', description: '', number: Date.now() }])
 	}
+	// Удаление информации из массива
 	const removeInfo = (number) => {
 		setInfo(info.filter((i) => i.number !== number))
 	}
+	// Информация об изменении
 	const changeInfo = (key, value, number) => {
 		setInfo(info.map((i) => (i.number === number ? { ...i, [key]: value } : i)))
 	}
-
+	// Функция создания продукта
 	const addDevice = async () => {
 		if (!name || !price || !imageUrl || !products.selectedGenres) {
-			alert('Please fill all required fields')
+			toast.success('Пожалуйста, заполните все обязательные поля')
 			return
 		}
-
+		// Создаем переменную для хранения параметров продукта
 		const productData = {
 			name: name,
 			price: price,
 			genreId: products.selectedGenres,
 			image_url: imageUrl,
 			info: JSON.stringify(
+				// Парсинг массива на переменные заголовка и описания
 				info.map((i) => ({ title: i.title, description: i.description }))
 			),
 		}
+		// Создаем продукт
 		const response = await createProducts(productData)
+		toast.success('Продукт добавлен!')
 		console.log('Продукт создан:', response)
 		onClose() // Закрыть модальное окно после успешного создания новости
 	}

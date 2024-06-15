@@ -10,21 +10,20 @@ import CreateNew from '../components/modals/CreateNew'
 
 const Admin = () => {
 	const [isAdmin, setIsAdmin] = useState(false)
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(true) // Состояние загрузки страницы
 
 	useEffect(() => {
 		const fetchUserInfo = async () => {
 			try {
 				const token = localStorage.getItem('token')
 				if (!token) {
-					console.error('Token not found')
+					console.error('Токен не обнаружен')
 					setIsAdmin(false)
 					setLoading(false)
 					return
 				}
 
 				const decodedToken = jwtDecode(token)
-				console.log('Decoded token:', decodedToken) // отладочное сообщение
 				const roleId = decodedToken.roleId
 
 				if (roleId === 2) {
@@ -33,7 +32,6 @@ const Admin = () => {
 					setIsAdmin(false)
 				}
 			} catch (error) {
-				console.error('Failed to fetch user info:', error)
 				setIsAdmin(false)
 			} finally {
 				setLoading(false)

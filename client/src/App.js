@@ -11,15 +11,15 @@ import { Context } from './index'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 const App = observer(() => {
-	const { users } = useContext(Context)
-	const [loading, setLoading] = useState(true)
+	const { users } = useContext(Context) // Контекст пользователя
+	const [loading, setLoading] = useState(true) // Состояние загрузки страницы
 
 	useEffect(() => {
 		check()
 			.then((data) => {
 				users.setUsers(true)
 				users.setIsAuth(true)
-			})
+			}) // Если токен сохранен, то остается авторизированным
 			.catch((error) => {
 				console.error('Ошибка при проверке пользователя:', error)
 			})
@@ -37,9 +37,9 @@ const App = observer(() => {
 	return (
 		<BrowserRouter>
 			<NavBar />
-			<AppRouter />
+			<AppRouter /> {/* Прогрузка страниц */}
 			<Footer />
-			<ToastContainer />
+			<ToastContainer /> {/* Блок для всплывающих сообщений */}
 		</BrowserRouter>
 	)
 })

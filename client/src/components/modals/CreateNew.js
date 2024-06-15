@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { createNews } from '../../http/newAPI'
-
+import { toast } from 'react-toastify'
 const CreateProducts = observer(({ isOpen, onClose }) => {
 	const [newTitle, setNewTitle] = useState('')
 	const [newDescription, setNewDescription] = useState('')
@@ -36,10 +36,11 @@ const CreateProducts = observer(({ isOpen, onClose }) => {
 				),
 			}
 			const response = await createNews(newsData)
+			toast.success('Новость добавлена!')
 			console.log('Новость создана:', response)
-			onClose() // Закрыть модальное окно после успешного создания новости
+			onClose()
 		} catch (error) {
-			console.error('Ошибка при создании новости:', error)
+			toast.error('Ошибка добавления!')
 		}
 	}
 

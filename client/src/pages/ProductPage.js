@@ -8,8 +8,8 @@ import {
 	createFavorite,
 	fetchFavorites,
 } from '../http/productAPI'
-import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 
+import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 import { observer } from 'mobx-react-lite'
 import '../css/Main.css'
 import { toast } from 'react-toastify'
@@ -17,32 +17,36 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Context } from '../index'
 
 const ProductPage = () => {
-	const [product, setProduct] = useState({ info: [] })
-	const [isAddingToBasket, setIsAddingToBasket] = useState(false)
-	const [isAddingToFavorite, setIsAddingToFavorite] = useState(false) // Состояние для блокировки кнопки избранного
-	const [loading, setLoading] = useState(true)
+	const { users } = useContext(Context) // Получение контекста пользователя
+	const [product, setProduct] = useState({ info: [] }) // Массив хранения информации о продукте
+	const [isAddingToBasket, setIsAddingToBasket] = useState(false) // Состояние для блокировки кнопки добавления, до тех пор пока не пройдет запрос
+	const [isAddingToFavorite, setIsAddingToFavorite] = useState(false) // Состояние для блокировки кнопки избранного, до тех пор пока не пройдет запрос
 
-	const { id } = useParams()
-	const { users } = useContext(Context)
+	const [loading, setLoading] = useState(true) // Состояние загрузки страницы
+
+	const { id } = useParams() // Получение id из url
+	// Загрузка данных продукта по id
 	useEffect(() => {
 		fetchOneProduct(id).then((data) => setProduct(data))
 		setLoading(false)
 	}, [id])
-
+	// Добавление или увеличение количества продукта в корзине
 	const handleAddToBasket = async () => {
 		if (!isAddingToBasket) {
 			setIsAddingToBasket(true)
-
+			// Проверка на авторизация
 			if (users.isAuth) {
 				const token = localStorage.getItem('token')
+				// Проверка токена
 				if (token) {
 					try {
 						if (users.usersId) {
+							// Поиск товара в корзине
 							const basket = await fetchBasket(users.usersId)
 							const basketProduct = basket.find(
 								(p) => p.productId === parseInt(id)
 							)
-
+							// Если товар в корзине есть, увеличиваем его количество
 							if (basketProduct) {
 								await increaseBasketProductQuantity(
 									basketProduct.basketId,
@@ -50,51 +54,65 @@ const ProductPage = () => {
 								)
 								toast.info('Количество товара увеличено.')
 							} else {
+								// Иначе добавляем его в корзину
+
 								const basketProduct = {
+									// Запись параметров в переменную
 									basketId: users.usersId,
 									productId: id,
 								}
-
+								// Создание подукта в корзине
 								await createBasketProduct(basketProduct)
+								// Увеличение количества товаров к счетчике товаров корзины
 								users.setCartCount(users.cartCount + 1)
-
+								// Вывод сообщения
 								toast.info('Товар добавлен в корзину.')
 							}
 						} else {
+							// Вывод сообщения
 							toast.error('ID пользователя не найден в token')
 						}
 					} catch (error) {
+						// Вывод сообщения
 						toast.error('Ошибка при обновлении корзины.')
 					}
 				} else {
+					// Вывод сообщения
 					toast.error('token не найден')
 				}
 			} else {
+				// Вывод сообщения
 				toast.error('Авторизуйтесь!')
 			}
-
-			setIsAddingToBasket(false)
+			setIsAddingToBasket(false) // Обновление состояние блокировки кнопки
 		}
 	}
-
+	// Добавление продукта в избранное
 	const handleAddToFavorite = async () => {
 		if (!isAddingToFavorite) {
 			setIsAddingToFavorite(true)
 			if (users.isAuth) {
+				// Проверка авторизации
 				const token = localStorage.getItem('token')
 				if (token) {
+					// Проверка токена
 					try {
-						const favorite = await fetchFavorites(users.usersId)
-						const favoriteProduct = favorite.find(
-							(p) => p.productId === parseInt(id)
-						)
-						if (favoriteProduct) {
-							toast.error('Товар уже в избранном.')
-							setIsAddingToFavorite(false)
-							return
-						}
+						// Проверка есть ли такой пользователь
 						if (users.usersId) {
+							// Проверка есть ли такой товар в фаворитах
+							const favorite = await fetchFavorites(users.usersId)
+							const favoriteProduct = favorite.find(
+								(p) => p.productId === parseInt(id)
+							)
+							// Если товар есть, то выводим сообщение
+							if (favoriteProduct) {
+								toast.error('Товар уже в избранном.')
+								setIsAddingToFavorite(false)
+								return
+							}
+							// Создание фаворитов
 							await createFavorite(id, users.usersId)
+							// Вывод сообщения
 							toast.info('Товар добавлен в избранное.')
 						} else {
 							toast.error('ID пользователя не найден в token')
