@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 const CreateProducts = observer(({ isOpen, onClose }) => {
 	const { products } = useContext(Context) // Инициализация контекста продукта
 	const [name, setName] = useState('') // Состояние для хранения имени
-	const [price, setPrice] = useState(0) // Состояние для хранения цены
+	const [price, setPrice] = useState('') // Состояние для хранения цены
 	const [imageUrl, setImageUrl] = useState('') // Состояние для хранения url
 	const [info, setInfo] = useState([]) // Состояние для хранения массива информации
 
@@ -30,8 +30,13 @@ const CreateProducts = observer(({ isOpen, onClose }) => {
 	}
 	// Функция создания продукта
 	const addDevice = async () => {
-		if (!name || !price || !imageUrl || !products.selectedGenres) {
-			toast.success('Пожалуйста, заполните все обязательные поля')
+		if (
+			name.trim() === '' ||
+			price === '' ||
+			imageUrl.trim() === '' ||
+			products.selectedGenres === ''
+		) {
+			toast.error('Пожалуйста, заполните все  поля')
 			return
 		}
 		// Создаем переменную для хранения параметров продукта
@@ -46,9 +51,8 @@ const CreateProducts = observer(({ isOpen, onClose }) => {
 			),
 		}
 		// Создаем продукт
-		const response = await createProducts(productData)
+		await createProducts(productData)
 		toast.success('Продукт добавлен!')
-		console.log('Продукт создан:', response)
 		onClose() // Закрыть модальное окно после успешного создания новости
 	}
 

@@ -52,10 +52,9 @@ const ProductPage = () => {
 									basketProduct.basketId,
 									basketProduct.productId
 								)
-								toast.info('Количество товара увеличено.')
+								toast.success('Количество товара увеличено.')
 							} else {
 								// Иначе добавляем его в корзину
-
 								const basketProduct = {
 									// Запись параметров в переменную
 									basketId: users.usersId,
@@ -66,7 +65,7 @@ const ProductPage = () => {
 								// Увеличение количества товаров к счетчике товаров корзины
 								users.setCartCount(users.cartCount + 1)
 								// Вывод сообщения
-								toast.info('Товар добавлен в корзину.')
+								toast.success('Товар добавлен в корзину.')
 							}
 						} else {
 							// Вывод сообщения
@@ -113,7 +112,7 @@ const ProductPage = () => {
 							// Создание фаворитов
 							await createFavorite(id, users.usersId)
 							// Вывод сообщения
-							toast.info('Товар добавлен в избранное.')
+							toast.success('Товар добавлен в избранное.')
 						} else {
 							toast.error('ID пользователя не найден в token')
 						}

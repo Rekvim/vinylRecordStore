@@ -25,7 +25,7 @@ const NewPage = () => {
 		)
 	}
 	return (
-		<main class='main container'>
+		<main className='main container'>
 			{news.info.map((info) => (
 				<h2 key={info.id} className='productPage-description  medium-title'>
 					{info.title}

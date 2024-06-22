@@ -5,6 +5,10 @@ const CreateAuthors = ({ isOpen, onClose }) => {
 	const [value, setValue] = useState('')
 
 	const addAuthor = () => {
+		if (value.trim() === '') {
+			toast.error('Поле названия пустое')
+			return
+		}
 		createAuthors({ name: value }).then((data) => {
 			setValue('')
 			onClose()

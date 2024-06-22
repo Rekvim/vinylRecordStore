@@ -27,6 +27,10 @@ const CreateProducts = observer(({ isOpen, onClose }) => {
 	}
 
 	const addNew = async () => {
+		if (newTitle.trim() === '' || newDescription === '') {
+			toast.error('Пожалуйста, заполните все  поля')
+			return
+		}
 		try {
 			const newsData = {
 				title: newTitle,
@@ -35,9 +39,8 @@ const CreateProducts = observer(({ isOpen, onClose }) => {
 					info.map((i) => ({ title: i.title, description: i.description }))
 				),
 			}
-			const response = await createNews(newsData)
+			await createNews(newsData)
 			toast.success('Новость добавлена!')
-			console.log('Новость создана:', response)
 			onClose()
 		} catch (error) {
 			toast.error('Ошибка добавления!')

@@ -6,7 +6,11 @@ const CreateGenre = ({ isOpen, onClose }) => {
 	const [value, setValue] = useState('') // Состояние для хранения названия
 
 	const addGenre = () => {
-		// СОздание жанра
+		if (value.trim() === '') {
+			toast.error('Поле названия пустое')
+			return
+		}
+		// Создание жанра
 		createGenres({ name: value }).then((data) => {
 			setValue('') // Очищаем состояние
 			onClose() // Закрываем окно
